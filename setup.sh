@@ -32,7 +32,7 @@ then
     echo -e "\e[33mCould not find network namespace 'nns-dtn-1'!"
     echo -e "\e[37mCreating network namespace \e[1m'nns-dtn-1'\e[0m."
     ip netns add nns-dtn-1
-    echo "Done."
+    echo -e "\e[32mDone."
 else
     echo -e "\e[33mWARNING! There exists a network namespace called 'nns-dtn-1'."
     echo -e "\e[33mProceeding will overwrite it with a new network namespace!"
@@ -51,7 +51,7 @@ then
     echo -e "\e[33mCould not find network namespace 'nns-dtn-2'!"
     echo -e "\e[37mCreating network namespace \e[1m'nns-dtn-2'\e[0m."
     ip netns add nns-dtn-2
-    echo "Done" 
+    echo -e "\e[32mDone." 
 else
     echo -e "\e[33mWARNING! There exists a network namespace called 'nns-dtn-2'."
     echo -e "\e[33mProceeding will overwrite it with a new network namespace!"
@@ -76,7 +76,7 @@ echo -e "\e[39m "
 echo "Assigning the interfaces to their respective namespaces..."
 ip link set node1-veth netns nns-dtn-1
 ip link set node2-veth netns nns-dtn-2
-echo -e "\e[32mDone!"
+echo -e "\e[32mDone."
 
 echo -e "\e[39m "
 
@@ -87,11 +87,11 @@ ip netns exec nns-dtn-1 ip addr add 10.1.1.1/24 dev node1-veth
 echo -e "IP-Address of \e[1m'node1-veth'\e[0m set to \e[1;4m10.1.1.1\e[0m"
 ip netns exec nns-dtn-2 ip addr add 10.1.1.2/24 dev node2-veth
 echo -e "IP-Address of \e[1m'node2-veth'\e[0m set to \e[1;4m10.1.1.2\e[0m"
-echo -e "\e[32mDone!"
+echo -e "\e[32mDone."
 echo -e "\e[39mBringing the interfaces up..."
 ip netns exec nns-dtn-1 ip link set dev node1-veth up
 ip netns exec nns-dtn-2 ip link set dev node2-veth up
-echo -e "\e[32mDone!"
+echo -e "\e[32mDone."
 
 echo -e "\e[39m "
 
@@ -107,8 +107,17 @@ fi
 
 echo -e "\e[39m "
 
+# Setting the ION_NODE_LIST_DIR environment variable for every 
+# new bash instance in the NNS by adding it to the .bashrc file.
+# -> All commands which need this variable need to be run in a 
+# root shell instantiated with "sudo su".
+
+sudo ip -all netns exec bash -c "echo export ION_NODE_LIST_DIR=$PWD/nodes >> ~/.bashrc"
+
 echo -e "\e[39mConfiguration of environment completed!"
 echo -e "\e[39m "
 
-echo "Checking for installed DTN..."
 
+
+echo "Checking for installed DTN..."
+ionstart -I test.rc 1> /dev/null && echo "\e[39mION installed" || echo "\e[31mION not installed"
