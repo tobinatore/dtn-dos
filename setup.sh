@@ -111,7 +111,7 @@ echo -e "\e[39m "
 # new bash instance in the NNS by adding it to the .bashrc file.
 # -> All commands which need this variable need to be run in a 
 # root shell instantiated with "sudo su".
-
+mkdir nodes
 sudo ip -all netns exec bash -c "echo export ION_NODE_LIST_DIR=$PWD/nodes >> ~/.bashrc"
 
 echo -e "\e[39mConfiguration of environment completed!"
@@ -119,5 +119,36 @@ echo -e "\e[39m "
 
 
 
-echo "Checking for installed DTN..."
-ionstart -I test.rc 1> /dev/null && echo "\e[39mION installed" || echo "\e[31mION not installed"
+echo "Checking for installed DTN..." 
+ionstart -I test.rc 1> /dev/null
+if [ $? -eq 0 ]
+then    echo -e "\e[32mION installed!" 
+else
+    echo -e "\e[31mION not installed!"
+    echo -e "\e[39mInstalling ION-DTN."
+
+    echo "Do you wish to run sudo apt update first?" 
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes ) sudo apt update; break;;
+            No ) echo "Skipping sudo apt update.";break;;
+        esac
+    done
+    echo "Installing package build-essential..."
+    sudo apt install build-essential -y 1> /dev/null
+    echo "Downloading build 4.0.0 of ION-DTN... "
+    wget https://sourceforge.net/projects/ion-dtn/files/ion-4.0.0.tar.gz/download
+    echo "Extracting files... "
+    tar xzf download
+    rm download
+    echo "Changing directories -> ion-4.0.0... "
+    cd ion-open-source-4.0.0
+    echo "Installing... "
+    ./configure 1> /dev/null
+    make 1> /dev/null
+    sudo make install 1> /dev/null
+    sudo ldconfig 1> /dev/null
+    echo -e "\e[32mFinished installing ION-DTN."
+fi
+echo ""
+echo -e "\e[32;1mFinished setup!\e[0m"
