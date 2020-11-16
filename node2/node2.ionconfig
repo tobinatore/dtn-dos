@@ -1,0 +1,4 @@
+# Setting a unique sdrName for this nodee to avoid the ionstart command 
+# crash.
+
+sdrName node2
