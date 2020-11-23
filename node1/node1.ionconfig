@@ -1,5 +1,0 @@
-# Setting a unique sdrName for this node to avoid the ionstart command 
-# crash.
-
-sdrName node1
-wmKey 1
