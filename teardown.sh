@@ -15,4 +15,4 @@ echo -e "\e[31mDeleting bridge..."
 ip link set br1 down
 sudo ip link del br1
 echo -e  "\e[31mDONE"
-
+echo -e "\e[39m "

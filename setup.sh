@@ -70,7 +70,7 @@ ip link set br1 up
 # network namespaces to the bridge.
 for ((node=1;node<=$NUMBER_OF_NODES;node++));
 do
-    echo "Creating the veth interface linking node $node and node $peer"
+    echo "Creating the veth interface linking node $node and bridge"
     ip link add node-veth$node type veth peer name bridge-veth$node
     echo "Assigning the interface to the namespaces..."
     ip link set node-veth$node netns nns-dtn-$node
@@ -131,7 +131,13 @@ echo -e "\e[39m "
 # -> All commands which need this variable need to be run in a 
 # root shell instantiated with "sudo su".
 mkdir nodes
-sudo ip -all netns exec bash -c "echo export ION_NODE_LIST_DIR=$PWD/nodes >> ~/.bashrc"
+if grep -q "ION_NODE_LIST_DIR" ~/.bashrc
+then
+	echo "ION_NODE_LIST_DIR environment variable already set."
+else
+	echo "Setting ION_NODE_LIST_DIR environment variable..."
+	#sudo echo "export ION_NODE_LIST_DIR=$PWD/nodes" >> ~/.bashrc
+fi
 
 echo -e "\e[39mConfiguration of environment completed!"
 echo -e "\e[39m "
@@ -158,7 +164,7 @@ else
         esac
     done
     echo "Installing package build-essential..."
-    sudo apt install build-essential -y 1> /dev/null
+    apt install build-essential -y 1> /dev/null
     echo "Downloading build 4.0.0 of ION-DTN... "
     wget https://sourceforge.net/projects/ion-dtn/files/ion-4.0.0.tar.gz/download
     echo "Extracting files... "
@@ -169,8 +175,8 @@ else
     echo "Installing... "
     ./configure 1> /dev/null
     make 1> /dev/null
-    sudo make install 1> /dev/null
-    sudo ldconfig 1> /dev/null
+    make install 1> /dev/null
+    ldconfig 1> /dev/null
     echo -e "\e[32mFinished installing ION-DTN."
     cd ..
 fi
@@ -266,8 +272,19 @@ do
     echo "Creating configuration file $CONFIG_FILE..."
     touch $CONFIG_FILE
     echo "sdrName node$node" > $CONFIG_FILE
-    echo "wmKey $node" >> $CONFIG_FILE 
+    echo "wmKey $node" >> $CONFIG_FILE
+    SCRIPT_FILE=start_node_$node.sh
+    echo -e "#!/bin/bash\n" > $SCRIPT_FILE
+    echo -e "ionstart -I host$node.rc" >> $SCRIPT_FILE
+    echo -e "" >> $SCRIPT_FILE
+    chmod 777 -R ../node$node/
+    gnome-terminal -e "ionstart -I host$node.rc" &
+    #exec ./start_node_$node.sh &
     cd ..
+    sleep 3s
 done
 echo ""
+
 echo -e "\e[32;1mFinished setup!\e[0m"
+
+
