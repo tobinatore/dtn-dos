@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Checking if the script is run with elevated priviledges.
-# This is needed for - amongst other things - mounting new network namespaces.
-if [ "$EUID" -ne 0 ]
-then echo -e "\e[31mPlease run as root as the script may need to mount network namespaces."
-echo -e "\e[39m "
-exit
-fi
-
 # Printing the setup text
 echo '---------------------------------------------------'
 echo '             _____      _                          '
@@ -38,9 +30,12 @@ else
     echo "Fetching git repository at https://github.com/coreemu/core.git..."
     git clone https://github.com/coreemu/core.git
     echo "Changing directories -> /core..."
+    cd core
     echo "Installing CORE locally..."
-    ./install.sh -l
-    
+    ./bootstrap.sh
+    ./configure
+    make
+    sudo make install
     echo "Changing directories -> dtn-dos ..."
     cd ..
     echo "Copying scenarios to ~/.core/config/ion ..."
