@@ -9,17 +9,25 @@ We try to keep the setup as simple as possible.
 
  1. Clone the repository using `git clone https://github.com/tobinatore/dtn-dos.git`
  2. Switch to the newly created directory.
- 3. In the directory run `$ sudo ./setup.sh`. This will configure your operating system and download / install ION-DTN. 
+ 3. In the directory run `$ ./setup_new.sh`. This will configure your operating system and download / install ION-DTN and CORE.
+ 4. Run `$ ./start.sh` this will start the scenario picker. 
 
 ### Remarks
-#### Configuration of your OS
-The script sets up a network namespace for every node in the DTN. This allows building a multi-node network on a single device instead of having a device for every node. The number of nodes can be chosen by the user during the setup, but it has to be in the range 3..10.
+#### setup_new.sh
+This script installs two components on your system.
+- CORE - A network emulation tool
+- ION-DTN - A DTN implementation used by e.g. NASA
+ 
+It also copies the included scenarios into the project directory of the CORE installation.
 
-The naming convention for the network namespaces created by the setup script is **nns-dtn-x** where **x** is the number of the future dtn node. If you - by any chance - already have a network namespace with such a name, the script will ask you whether that network namespace can be overriden. If you need it, you can refuse to override it and the script will exit.
+#### start.sh
+Starts the core daemon needed for running the network simulations and prompts the user to choose a scenario. When the user has chosen a valid scenario, the scripts starts core-gui in execution mode and the simulation gets run.
 
-Every network namespace created by the setup script gets assigned a veth-Interface for communicating with the other network namespaces. These interfaces each get an IP from the *10.1.1.0/24* subnet starting at *10.1.1.0* which gets assigned to the bridge, so please make sure that these IP's are available before running the setup script to avoid problems. 
 
-Because ION-DTN needs to access an environment variable when running multiple nodes on the same machine, commands executed in a nodes network namespace ***must*** be run as root (so it's necessary to either run `$ sudo su` or `$ sudo /bin/bash` before executing commands in the network namespaces). This is because sudo resets environment variables. 
+#### Download and installation of CORE
+The script always downloads the most recent version of CORE and installs it on your system.
+
+If you have Docker installed, the default iptable rules will block CORE traffic.
 
 #### Download and installation of ION-DTN
 The script will download version 4.0.0 of ION-DTN from Sourceforge, so make sure you're connected to the internet.
@@ -28,6 +36,17 @@ We developed and tested the script on Ubuntu 20.04. It should work on different 
 
 The script might seem unresponsive during the installation of ION-DTN but it is most likely not. We've decided to not display the output of the ./configure, make  and make install commands as to not clutter the terminal. Errors and warnings will still be displayed.
 
-## Testing DoS attacks on the newly created network
+## Running scenarios
 
-*Coming soon, still in development!*
+When you have chosen a scenario to run using the start.sh script, the core gui gets started, and the simulation runs. At the moment the setup of the scenarios has to be done by hand, but we're working on a way to automate this.
+
+## TestScenario
+The only scenario as of right now.
+
+Please double click on every node in the core gui (n1 - n3). This will open a shell on the respective node. Run the following commands on each node:
+
+ 1. `$ cp /home/{username}/.core/configs/ion/TestScenario/{node}/ .` 
+ 2. `$ ionstart -I {node}.rc` or `$ ionstart -I {node}_ltp.rc`
+ 3. any of ION's inbuilt commands such as `bping`, `bpsource`, ... Available endpoints are `{node number}`.1 - `{node number}`.3 .
+
+*More coming soon, still in development!*
