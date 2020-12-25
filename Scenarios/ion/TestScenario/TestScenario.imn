@@ -10,8 +10,8 @@ node n1 {
 	!
     }
     canvas c1
-    iconcoords {151.0 401.0}
-    labelcoords {151.0 433.0}
+    iconcoords {149.0 401.0}
+    labelcoords {149.0 433.0}
     interface-peer {eth0 n2}
     services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
     custom-config {
@@ -19,6 +19,16 @@ node n1 {
 	custom-command UserDefined
 	config {
 	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
 	}
     }
 }
@@ -39,8 +49,8 @@ node n2 {
 	!
     }
     canvas c1
-    iconcoords {323.0 100.0}
-    labelcoords {323.0 132.0}
+    iconcoords {320.0 102.0}
+    labelcoords {320.0 134.0}
     interface-peer {eth0 n1}
     interface-peer {eth1 n3}
     custom-config {
@@ -48,6 +58,16 @@ node n2 {
 	custom-command UserDefined
 	config {
 	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
 	}
     }
     services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
@@ -65,14 +85,24 @@ node n3 {
 	!
     }
     canvas c1
-    iconcoords {564.0 420.0}
-    labelcoords {564.0 452.0}
+    iconcoords {565.0 420.0}
+    labelcoords {565.0 452.0}
     interface-peer {eth0 n2}
     custom-config {
 	custom-config-id service:UserDefined
 	custom-command UserDefined
 	config {
 	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
 	}
     }
     services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
