@@ -38,15 +38,27 @@ The script might seem unresponsive during the installation of ION-DTN but it is 
 
 ## Running scenarios
 
-When you have chosen a scenario to run using the start.sh script, the core gui gets started, and the simulation runs. At the moment the setup of the scenarios has to be done by hand, but we're working on a way to automate this.
+When you have chosen a scenario to run using the start.sh script, the core gui gets started, and the simulation runs. The setup of the scenarios in CORE is handled by setup scripts, so you don't have to do anything besides running the start.sh script and picking a scenario.
 
-## TestScenario
-The only scenario as of right now.
+## Overview over all included scenarios
 
-Please double click on every node in the core gui (n1 - n3). This will open a shell on the respective node. Run the following commands on each node:
+### TestScenario
+The only scenario as of right now. The following services are being automatically started when this scenario is chosen:
 
- 1. `$ cp /home/{username}/.core/configs/ion/TestScenario/{node}/ .` 
- 2. `$ ionstart -I {node}.rc` or `$ ionstart -I {node}_ltp.rc`
- 3. any of ION's inbuilt commands such as `bping`, `bpsource`, ... Available endpoints are `{node number}`.1 - `{node number}`.3 .
+- bping on node 1, pinging node 3 on the 3.1 enpoint from node 1's 1.2 endpoint
+- bpecho on node 3, acknowledging incoming bundles on enpoint 3.1
+
+When double clicking on a node in the CORE-GUI, a shell with root access will open on that specific node. You can run any ION command there for further testing.
+As of now, there is no script visualizing the traffic between node 1 and node 3. It's most likely that there won't be one in the near future, as this is just a basic scenario for testing. You can run `bpstats` followed by `tail ion.log` to get an overview about how many bundles were sent / received.
+    
+A line by line overview of the output of `bpstats`:
+1. Number of bundles sourced (created) by this node. -> grouped by priority with a sum of all bundles at the end (this also applies for the following lines)
+2. Number of bundles forwarded by the node.
+3. Number of bundles that have been transmitted.
+4. Number of bundles that have been received.
+5. Number of bundles that have been delivered.
+6. Number of bundles that have been custody transferred.
+7. Number of bundles that have been reforwarded
+8. Number of bundles that expired.
 
 *More coming soon, still in development!*
