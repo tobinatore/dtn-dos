@@ -1,0 +1,348 @@
+node n1 {
+    type router
+    model router
+    network-config {
+	hostname n1
+	!
+	interface eth0
+	 ip address 10.0.0.1/24
+	 ipv6 address 2001:0::1/64
+	!
+    }
+    canvas c1
+    iconcoords {121.0 120.0}
+    labelcoords {121.0 152.0}
+    interface-peer {eth0 n2}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+}
+
+node n2 {
+    type router
+    model router
+    network-config {
+	hostname n2
+	!
+	interface eth1
+	 ip address 10.0.1.1/24
+	 ipv6 address 2001:1::1/64
+	!
+	interface eth0
+	 ip address 10.0.0.2/24
+	 ipv6 address 2001:0::2/64
+	!
+    }
+    canvas c1
+    iconcoords {165.0 260.0}
+    labelcoords {165.0 292.0}
+    interface-peer {eth0 n1}
+    interface-peer {eth1 n3}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+}
+
+node n3 {
+    type router
+    model router
+    network-config {
+	hostname n3
+	!
+	interface eth2
+	 ip address 10.0.3.1/24
+	 ipv6 address 2001:3::1/64
+	!
+	interface eth1
+	 ip address 10.0.2.1/24
+	 ipv6 address 2001:2::1/64
+	!
+	interface eth0
+	 ip address 10.0.1.2/24
+	 ipv6 address 2001:1::2/64
+	!
+    }
+    canvas c1
+    iconcoords {302.0 208.0}
+    labelcoords {302.0 240.0}
+    interface-peer {eth0 n2}
+    interface-peer {eth1 n4}
+    interface-peer {eth2 n5}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+}
+
+node n4 {
+    type router
+    model router
+    network-config {
+	hostname n4
+	!
+	interface eth0
+	 ip address 10.0.2.2/24
+	 ipv6 address 2001:2::2/64
+	!
+    }
+    canvas c1
+    iconcoords {864.0 204.0}
+    labelcoords {864.0 236.0}
+    interface-peer {eth0 n3}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('sh setup.sh', 'setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    custom-config {
+	custom-config-id {service:UserDefined:sh setup.sh}
+	custom-command {sh setup.sh}
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+}
+
+node n5 {
+    type router
+    model router
+    network-config {
+	hostname n5
+	!
+	interface eth0
+	 ip address 10.0.3.2/24
+	 ipv6 address 2001:3::2/64
+	!
+    }
+    canvas c1
+    iconcoords {400.0 580.0}
+    labelcoords {400.0 612.0}
+    interface-peer {eth0 n3}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+}
+
+link l1 {
+    nodes {n1 n2}
+    bandwidth 0
+}
+
+link l2 {
+    nodes {n2 n3}
+    bandwidth 0
+}
+
+link l3 {
+    nodes {n3 n4}
+    bandwidth 0
+}
+
+link l4 {
+    nodes {n3 n5}
+    bandwidth 0
+}
+
+annotation a1 {
+    iconcoords {335 495 518 658}
+    type rectangle
+    label {Attacker}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #ff4c40
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+annotation a2 {
+    iconcoords {59 55 208 195}
+    type rectangle
+    label {Ground Station}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #C0C0FF
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+annotation a3 {
+    iconcoords {781 121 957 285}
+    type rectangle
+    label {Satellite}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #C0C0FF
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+annotation a4 {
+    iconcoords {412 138 741 299}
+    type rectangle
+    label {LTP}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #fff930
+    width 0
+    border black
+    rad 34
+    canvas c1
+}
+
+annotation a5 {
+    iconcoords {422.0 222.0}
+    type text
+    label {Connection fails regularly (30s on, 30s off)}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    effects {italic}
+    canvas c1
+}
+
+annotation a6 {
+    type text
+    iconcoords {433.0 229.0}
+    label {}
+    canvas c1
+}
+
+annotation a7 {
+    iconcoords {464.0 246.0}
+    type text
+    label {to force bundle buildup at n3.}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    effects {italic}
+    canvas c1
+}
+
+annotation a8 {
+    iconcoords {342.0 630.0}
+    type text
+    label {Floods n3 with bundles.}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    effects {italic}
+    canvas c1
+}
+
+annotation a9 {
+    type text
+    iconcoords {427.0 635.0}
+    label {}
+    canvas c1
+}
+
+annotation a10 {
+    type text
+    iconcoords {427.0 635.0}
+    label {}
+    canvas c1
+}
+
+canvas c1 {
+    name {Canvas1}
+}
+
+option global {
+    interface_names no
+    ip_addresses yes
+    ipv6_addresses no
+    node_labels yes
+    link_labels yes
+    show_api no
+    background_images no
+    annotations yes
+    grid yes
+    traffic_start 0
+}
+
+option session {
+}
+

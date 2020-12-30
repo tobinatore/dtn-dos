@@ -86,6 +86,6 @@ fi
 echo -e "\e[39m "
 
 echo -e "\e[32;1mFinished setup!\e[0m"
-echo -e "e[1mYou can now run start.sh to run a scenario. A full list of scenarios can be found in the 'Scenarios' directory."
+echo -e "\e[1mYou can now run start.sh to run a scenario. A full list of scenarios can be found in the 'Scenarios' directory."
 
 
