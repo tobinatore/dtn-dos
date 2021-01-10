@@ -1,5 +1,119 @@
 #!/bin/bash
 
+function runScenario {
+    # start core with the chosen scenario
+    echo "Starting scenario: $1"
+    xterm -e "core-gui --start ~/.core/configs/ion/$1/$1.imn" &
+    
+    # start the script visualizing the number of bundles at each node
+    BV=0
+    if [ -f ~/.core/configs/ion/$1/bundlewatch.sh ]
+    then
+        echo "Starting bundle visualization."
+        sleep 1 
+        xterm -e "~/.core/configs/ion/$1/bundlewatch.sh ~/.core/configs/ion/$1/" &
+        BV=1
+    fi
+    
+    # start the 'other' visualization script if there is one
+    OT=0
+    if [ -f ~/.core/configs/ion/${cdarray[choice]}/othervis.sh ]
+    then
+        echo "Starting visualization."
+        sleep 1 
+        xterm -hold -e "~/.core/configs/ion/$1/othervis.sh ~/.core/configs/ion/$1/" &
+        OT=1
+    fi
+    
+    # start the script visualizing the bping output
+    PV=0
+    if [ -f ~/.core/configs/ion/$1/pingvis.sh ]
+    then
+        echo "Starting bundle ping visualization."
+        sleep 1
+        xterm -hold -e "~/.core/configs/ion/$1/pingvis.sh ~/.core/configs/ion/$1/" &
+        PV=1
+    fi
+    
+    echo "Enter 'q' to quit the scenario."
+    #wait for "q"
+    while true; do
+        read -e -r -p ":" symbol
+        # Check that the user typed "q"
+        if [[ $symbol = "q" ]]; then
+           echo "Resetting CORE-daemon..."
+            sudo service core-daemon restart
+            echo "Done."
+            echo "Stopping CORE-GUI..."
+            kill $(ps -aux | grep "core.tcl" | grep -v "grep" | awk '{print $2}')
+            echo "Done."
+            
+            if [ "$BV" -eq "1" ]
+            then
+                echo "Stopping bundle visualization..."
+                kill $(/bin/ps -fu $USER| grep "bundlewatch" | grep -v "grep" | awk '{print $2}')
+                echo "Done."
+            fi
+         	if [ "$OT" -eq "1" ]
+            then
+                echo "Stopping other visualizations..."
+                kill $(/bin/ps -fu $USER| grep "othervis" | grep -v "grep" | awk '{print $2}')
+                echo "Done."
+            fi
+            if [ "$PV" -eq "1" ]
+            then
+                echo "Stopping bundle ping..."
+                kill $(/bin/ps -fu $USER| grep "pingvis" | grep -v "grep" | awk '{print $2}')
+                echo "Done."
+            fi
+            if [ -f ~/.core/configs/ion/$1/cleanup.sh ]
+	    then
+                echo "Cleaning up scenario directory..."
+                ~/.core/configs/ion/$1/cleanup.sh "$(find ~ -path "*/.core/*/$1")"
+                echo "Done."
+                
+            fi
+            clear
+            break
+        fi
+    done
+}
+
+
+
+
+
+
+STATE="running"
+
+if [ $(systemctl show -p SubState --value core-daemon) = "$STATE" ]
+then
+    echo -e "\e[32mcore-daemon already running! \e[39m"
+else
+    echo "Starting CORE-daemon..."
+    sudo service core-daemon start
+    echo "Done."
+fi
+
+if [ ! -d ~/.core/configs/ion ]
+then 
+    echo "Copying scenarios to ~/.core/config/ion ..."
+    cp -r ./Scenarios/ion ~/.core/configs
+fi
+
+
+
+basedir=~/.core/configs/ion/
+
+# Create array
+cdarray=( "$basedir"/*/ )
+
+# remove leading basedir:
+cdarray=( "${cdarray[@]#"$basedir/"}" )
+# remove trailing backslash and insert Exit choice
+cdarray=( Exit "${cdarray[@]%/}" )
+
+while true; do
 echo '==================================================================='
 echo '==================================================================='
 echo '$$$$$$$\ $$$$$$$$\ $$\   $$\         $$$$$$$\             $$$$$$\  '
@@ -14,31 +128,10 @@ echo '==================================================================='
 echo '==================================================================='
 echo ""
 
-STATE="running"
-
-if [ $(systemctl show -p SubState --value core-daemon) = "$STATE" ]
-then
-    echo -e "\e[32mcore-daemon already running! \e[39m"
-else
-    echo "Starting CORE-daemon..."
-    sudo service core-daemon start
-    echo "Done."
-fi
 echo ""
 echo "===================="
 echo "Available scenarios:"
 echo "===================="
-
-basedir=~/.core/configs/ion/
-
-# Create array
-cdarray=( "$basedir"/*/ )
-
-# remove leading basedir:
-cdarray=( "${cdarray[@]#"$basedir/"}" )
-# remove trailing backslash and insert Exit choice
-cdarray=( Exit "${cdarray[@]%/}" )
-
 # check that at least one directory's in there:
 if ((${#cdarray[@]}<=1)); then
     echo 'No subdirectories found. Exiting.\n'
@@ -66,67 +159,13 @@ while true; do
 done
 
 # checking if user chose exit and stopping the core daemon should that be the case.
-if ((choice==0)); then
-    echo 'Stopping CORE-daemon...\n'
-    sudo service core-daemon stop
-    echo 'Done.'
-    echo 'Exiting.'
-    exit 0
-fi
-
-# start core with the chosen scenario
-echo "Starting scenario: ${cdarray[choice]}"
-xterm -e "core-gui --start ~/.core/configs/ion/${cdarray[choice]}/${cdarray[choice]}.imn" &
-
-# start the script visualizing the number of bundles at each node
-BV=0
-if [ -f ~/.core/configs/ion/${cdarray[choice]}/bundlewatch.sh ]
-then
-    echo "Starting bundle visualization."
-    sleep 1 
-    xterm -e "~/.core/configs/ion/${cdarray[choice]}/bundlewatch.sh ~/.core/configs/ion/${cdarray[choice]}/" &
-    BV=1
-fi
-
-# start the script visualizing the bping output
-PV=0
-if [ -f ~/.core/configs/ion/${cdarray[choice]}/pingvis.sh ]
-then
-    echo "Starting bundle ping visualization."
-    sleep 1
-    xterm -hold -e "~/.core/configs/ion/${cdarray[choice]}/pingvis.sh ~/.core/configs/ion/${cdarray[choice]}/" &
-    PV=1
-fi
-
-echo "Enter 'q' to quit the scenario."
-#wait for "q"
-while true; do
-    read -e -r -p ":" symbol
-    # Check that the user typed "q"
-    if [[ $symbol = "q" ]]; then
-        echo "Stopping CORE-daemon..."
-        #sudo service core-daemon stop
-        echo "Done."
-        echo "Stopping CORE-GUI..."
-        kill $(/bin/ps -fu $USER| grep "core-gui" | grep -v "grep" | awk '{print $2}')
-        echo "Done."
-        echo "Stopping bundle visualization..."
-        if [ "$BV" -eq "1" ]
-        then
-            kill $(/bin/ps -fu $USER| grep "bundlewatch" | grep -v "grep" | awk '{print $2}')
-        fi
-        echo "Done."
-        echo "Stopping bundle ping..."
-        if [ "$PV" -eq "1" ]
-        then
-            kill $(/bin/ps -fu $USER| grep "pingvis" | grep -v "grep" | awk '{print $2}')
-        fi
-        echo "Done."
-        echo "Cleaning up scenario directory..."
-        ~/.core/configs/ion/${cdarray[choice]}/cleanup.sh "$(find ~ -path "*/.core/*/${cdarray[choice]}")"
-        echo "Done."
+    if ((choice==0)); then
+        echo 'Stopping CORE-daemon...\n'
+        sudo service core-daemon stop
+        echo 'Done.'
         echo 'Exiting.'
         exit 0
+    else
+        runScenario "${cdarray[choice]}"
     fi
 done
-
