@@ -1,0 +1,77 @@
+## begin ionadmin
+1 5 'n5.ionconfig'
+ 
+s
+ 
+a contact +1 +3600 1 1 100000
+a contact +1 +3600 1 2 100000
+a contact +1 +3600 2 1 100000
+a contact +1 +3600 2 2 100000
+a contact +1 +3600 2 3 100000
+a contact +1 +3600 3 2 100000
+a contact +1 +3600 3 3 100000
+#a contact +0 +3600 3 4 100000
+a contact +0 +3600 3 5 100000
+#a contact +0 +3600 4 3 100000 
+#a contact +0 +3600 4 4 100000 
+a contact +0 +3600 5 3 100000
+a contact +0 +3600 5 5 100000
+ 
+a range +1 +3600 1 1 1
+a range +1 +3600 1 2 1
+a range +1 +3600 2 1 1
+a range +1 +3600 2 2 1
+a range +1 +3600 2 3 1
+a range +1 +3600 3 2 1
+a range +1 +3600 3 3 1
+#a range +0 +3600 3 4 1
+a range +0 +3600 3 5 1
+#a range +0 +3600 4 3 1
+#a range +1 +3600 4 4 1
+a range +0 +3600 5 3 1
+a range +0 +3600 5 5 1
+
+m production 1000000
+m consumption 1000000
+## end ionadmin
+ 
+## begin ionsecadmin
+1
+## end ionsecadmin
+ 
+## begin ltpadmin
+1 100 100000
+ 
+a span 3 32 32 1400 10000 1 'udplso 10.0.3.1:1113' 300
+a span 4 32 32 1400 10000 1 'udplso 10.0.3.2:1113' 300
+
+s 'udplsi 10.0.0.1:1113'
+w 1
+## end ltpadmin
+ 
+## begin bpadmin
+1
+a scheme ipn 'ipnfw' 'ipnadminep'
+ 
+a endpoint ipn:5.0 q
+a endpoint ipn:5.1 q
+a endpoint ipn:5.2 q
+a endpoint ipn:5.3 q
+a endpoint ipn:5.4 q
+a endpoint ipn:5.5 q
+
+a protocol tcp 1400 100
+ 
+a induct tcp 0.0.0.0:4556 tcpcli
+a outduct tcp 127.0.0.1:4556 tcpclo
+a outduct tcp 10.0.3.1:4556 tcpclo
+ 
+w 1
+ 
+s
+## end bpadmin
+ 
+## begin ipnadmin
+a plan 5 tcp/127.0.0.1:4556
+a plan 3 tcp/10.0.3.1:4556
+## end ipnadmin

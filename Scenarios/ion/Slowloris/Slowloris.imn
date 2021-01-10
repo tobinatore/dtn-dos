@@ -1,0 +1,442 @@
+node n1 {
+    type router
+    model router
+    network-config {
+	hostname n1
+	!
+	interface eth0
+	 ip address 10.0.0.1/24
+	 ipv6 address 2001:0::1/64
+	!
+    }
+    canvas c1
+    iconcoords {84.0 218.0}
+    labelcoords {84.0 250.0}
+    interface-peer {eth0 n2}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+}
+
+node n2 {
+    type router
+    model router
+    network-config {
+	hostname n2
+	!
+	interface eth2
+	 ip address 10.0.2.2/24
+	 ipv6 address 2001:2::2/64
+	!
+	interface eth1
+	 ip address 10.0.1.1/24
+	 ipv6 address 2001:1::1/64
+	!
+	interface eth0
+	 ip address 10.0.0.2/24
+	 ipv6 address 2001:0::2/64
+	!
+    }
+    canvas c1
+    iconcoords {493.0 74.0}
+    labelcoords {493.0 106.0}
+    interface-peer {eth0 n1}
+    interface-peer {eth1 n3}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+    interface-peer {eth2 n4}
+}
+
+node n3 {
+    type router
+    model router
+    network-config {
+	hostname n3
+	!
+	interface eth1
+	 ip address 10.0.3.1/24
+	 ipv6 address 2001:3::1/64
+	!
+	interface eth0
+	 ip address 10.0.1.2/24
+	 ipv6 address 2001:1::2/64
+	!
+    }
+    canvas c1
+    iconcoords {593.0 373.0}
+    labelcoords {593.0 405.0}
+    interface-peer {eth0 n2}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+    interface-peer {eth1 n5}
+}
+
+node n4 {
+    type router
+    model router
+    network-config {
+	hostname n4
+	!
+	interface eth0
+	 ip address 10.0.2.1/24
+	 ipv6 address 2001:2::1/64
+	!
+    }
+    canvas c1
+    iconcoords {275.0 506.0}
+    labelcoords {275.0 538.0}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+    interface-peer {eth0 n2}
+}
+
+node n5 {
+    type router
+    model router
+    network-config {
+	hostname n5
+	!
+	interface eth0
+	 ip address 10.0.3.2/24
+	 ipv6 address 2001:3::2/64
+	!
+    }
+    canvas c1
+    iconcoords {774.0 597.0}
+    labelcoords {774.0 629.0}
+    interface-peer {eth0 n3}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	dirs=('/var/ion', )
+	files=('setup.sh', )
+	cmdup=('sh setup.sh', )
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:setup.sh
+	custom-command setup.sh
+	config {
+	dirn=`dirname $SESSION_FILENAME`
+	sh $dirn/nodeSetup.sh
+	}
+    }
+    services {OSPFv2 OSPFv3 zebra IPForward UserDefined}
+}
+
+link l1 {
+    nodes {n1 n2}
+    bandwidth 0
+}
+
+link l2 {
+    nodes {n2 n3}
+    bandwidth 0
+}
+
+link l3 {
+    nodes {n4 n2}
+    bandwidth 0
+}
+
+link l4 {
+    nodes {n3 n5}
+    bandwidth 0
+}
+
+annotation a1 {
+    iconcoords {28.0 149.0 216.0 304.0}
+    type rectangle
+    label {Monitoring System}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #C0C0FF
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+annotation a2 {
+    iconcoords {377.0 5.0 641.0 133.0}
+    type rectangle
+    label {Satellite}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #C0C0FF
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+annotation a3 {
+    iconcoords {501 264 740 430}
+    type rectangle
+    label {Control Center}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #C0C0FF
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+annotation a4 {
+    iconcoords {624 504 904 633}
+    type rectangle
+    label {Emergency Warning System}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #C0C0FF
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+annotation a5 {
+    iconcoords {6.0 609.0}
+    type text
+    label {Simplified topology of the warning system (+ attacker) described at}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize 12
+    canvas c1
+}
+
+annotation a6 {
+    type text
+    iconcoords {382.0 608.0}
+    label {}
+    canvas c1
+}
+
+annotation a7 {
+    iconcoords {8.0 627.0}
+    type text
+    label {https://www.telegrafia.eu/en/solution/mass-public-warning/natural-disaster-warning-systems/}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {11}
+    canvas c1
+}
+
+annotation a8 {
+    iconcoords {166 386 397 563}
+    type rectangle
+    label {Attacker}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #ff5400
+    width 0
+    border black
+    rad 25
+    canvas c1
+}
+
+annotation a9 {
+    iconcoords {157.0 577.0}
+    type text
+    label {The attack starts after ~ 20 pings.}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    effects {bold}
+    canvas c1
+}
+
+annotation a10 {
+    iconcoords {258.0 128.0}
+    type text
+    label {TCP}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a11 {
+    type text
+    iconcoords {277.0 107.0}
+    label {}
+    canvas c1
+}
+
+annotation a15 {
+    iconcoords {245 107 306 150}
+    type oval
+    label {}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #ffff5b
+    width 0
+    border black
+    canvas c1
+}
+
+annotation a12 {
+    iconcoords {332 218 399 267}
+    type oval
+    label {}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #ffff5b
+    width 0
+    border black
+    canvas c1
+}
+
+annotation a13 {
+    iconcoords {352.0 244.0}
+    type text
+    label {TCP}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a14 {
+    iconcoords {482 184 543 227}
+    type oval
+    label {}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #ffff5b
+    width 0
+    border black
+    canvas c1
+}
+
+annotation a16 {
+    iconcoords {497.0 205.0}
+    type text
+    label {TCP}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+annotation a17 {
+    iconcoords {675 434 750 491}
+    type oval
+    label {}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #ffff5b
+    width 0
+    border black
+    canvas c1
+}
+
+annotation a18 {
+    iconcoords {694.0 464.0}
+    type text
+    label {TCP}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    canvas c1
+}
+
+canvas c1 {
+    name {Canvas1}
+    refpt {0 0 47.5791667 -122.132322 2.0}
+    scale {150.0}
+    wallpaper-style {upperleft}
+    wallpaper {}
+    size {911 639}
+}
+
+option global {
+    interface_names no
+    ip_addresses yes
+    ipv6_addresses yes
+    node_labels yes
+    link_labels yes
+    show_api no
+    background_images no
+    annotations yes
+    grid yes
+    traffic_start 0
+}
+
+option session {
+}
+
