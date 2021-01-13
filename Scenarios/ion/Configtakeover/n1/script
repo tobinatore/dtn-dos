@@ -1,0 +1,29 @@
+LOG=`dirname $SESSION_FILENAME`/node2.log
+
+echo "send bundle with message '1' to node 3" >> $LOG
+bpsource ipn:3.1 "1" >> $LOG
+echo "message sent" >> $LOG
+sleep 5
+touch badCommandfile.bprc >> $LOG
+echo "x protocol udp" >> badCommandfile.bprc
+echo "x protocol tcp" >> badCommandfile.bprc
+echo "x protocol ltp" >> badCommandfile.bprc
+echo "badCommandfile.bprc created" >> $LOG
+echo "Starting bpadmin" >> $LOG
+bpadmin badCommandfile.bprc >> $LOG
+echo "node 2 has no access to protocolls ltp, tcp and udp" >> $LOG
+sleep 1
+echo "trying to send bundle with message '2' to node 3" >> $LOG
+bpsource ipn:3.1 "2" >> $LOG
+echo "" >> $LOG
+echo "bpsource executed" >> $LOG
+sleep 10
+touch goodCommandfile.bprc >> $LOG
+echo "s protocol udp" >> goodCommandfile.bprc
+echo "goodCommandfile.bprc created" >> $LOG
+echo "Starting bpadmin" >> $LOG
+bpadmin goodCommandfile.bprc >> $LOG
+echo "node 2 has now access to protocolls udp" >> $LOG
+echo "node 2 sends queued bundles" >> $LOG
+
+

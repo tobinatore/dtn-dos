@@ -21,7 +21,7 @@ function runScenario {
     then
         echo "Starting visualization."
         sleep 1 
-        xterm -hold -e "~/.core/configs/ion/$1/othervis.sh ~/.core/configs/ion/$1/" &
+        xterm -hold -T ${cdarray[choice]} -e "~/.core/configs/ion/$1/othervis.sh ~/.core/configs/ion/$1/" &
         OT=1
     fi
     

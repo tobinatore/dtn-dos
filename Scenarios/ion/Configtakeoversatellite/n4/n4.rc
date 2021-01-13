@@ -1,0 +1,85 @@
+## begin ionadmin
+1 4 'n4.ionconfig'
+ 
+s
+ 
+a contact +1 +3600 1 1 100000
+a contact +1 +3600 1 2 100000
+a contact +1 +3600 2 1 100000
+a contact +1 +3600 2 2 100000
+a contact +1 +3600 2 3 100000
+a contact +1 +3600 3 2 100000
+a contact +1 +3600 3 3 100000
+a contact +1 +3600 3 5 100000
+a contact +1 +3600 4 4 100000
+a contact +1 +3600 5 3 100000
+a contact +1 +3600 5 5 100000 
+ 
+ 
+a range +1 +3600 1 1 1
+a range +1 +3600 1 2 1
+a range +1 +3600 2 1 1
+a range +1 +3600 2 2 1
+a range +1 +3600 2 3 1
+a range +1 +3600 3 2 1
+a range +1 +3600 3 3 1
+
+a range +1 +3600 3 5 1
+a range +1 +3600 4 3 1
+a range +1 +3600 4 4 1
+a range +1 +3600 5 3 1
+a range +1 +3600 5 5 1
+ 
+# Defining times n3 and n4 are connected
+a range +0 +3600 3 4 1
+a range +0 +3600 4 3 1
+a contact +0 +3600 3 4 100000
+a contact +0 +3600 4 3 100000 
+
+m production 1000000
+m consumption 1000000
+## end ionadmin
+ 
+## begin ionsecadmin
+1
+## end ionsecadmin
+ 
+## begin ltpadmin
+1 100 100000
+ 
+a span 3 32 32 1400 10000 1 'udplso 10.0.2.1:1113' 300
+a span 4 32 32 1400 10000 1 'udplso 10.0.2.2:1113' 300
+
+s 'udplsi 0.0.0.0:1113'
+w 1
+## end ltpadmin
+ 
+## begin bpadmin
+1
+a scheme ipn 'ipnfw' 'ipnadminep'
+ 
+a endpoint ipn:4.0 q
+a endpoint ipn:4.1 q
+a endpoint ipn:4.2 q
+a endpoint ipn:4.3 q
+a endpoint ipn:4.4 q
+a endpoint ipn:4.5 q
+
+a protocol udp 1400 100
+a protocol ltp 1400 100
+ 
+a induct udp 0.0.0.0:4556 udpcli
+a induct ltp 4 ltpcli
+
+a outduct udp 127.0.0.1:4556 'udpclo 2'
+#a outduct udp 10.0.2.1:4556 'udpclo 2'
+a outduct ltp 3 ltpclo
+w 1
+ 
+s
+## end bpadmin
+ 
+## begin ipnadmin
+a plan 3 ltp/3
+a plan 4 udp/127.0.0.1:4556
+## end ipnadmin

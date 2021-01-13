@@ -1,0 +1,17 @@
+LOG=`dirname $SESSION_FILENAME`/node3.log
+echo "Hello" >> $LOG
+sleep 10
+echo "Starting Configchange on node 4" >> $LOG
+touch badlgfile >> $LOG
+echo "[cmd.bprc" >> badlgfile
+echo "x protocol ltp" >> badlgfile
+echo "]" >> badlgfile
+echo "!bpadmin cmd.bprc" >> badlgfile
+echo "badlgfile created" >> $LOG
+echo "Starting lgsend" >> $LOG
+lgsend badlgfile ipn:3.1 ipn:4.2 >> $LOG
+echo "" >> $LOG
+echo "lgsend executed" >> $LOG
+
+
+
