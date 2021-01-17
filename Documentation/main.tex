@@ -7,6 +7,7 @@
 \usepackage{csquotes}
 \usepackage{wrapfig}
 \usepackage{biblatex}
+\usepackage{listings}
 \addbibresource{references.bib}
 
 \graphicspath{ {./img/} }
@@ -58,7 +59,7 @@ Institut für Systemarchitektur, Lehrstuhl Rechnernetze \\
 
 \vspace{1cm}
 \noindent
-{\LARGE Projektbericht} \\
+{\LARGE Projektdokumentation} \\
 
 \vspace{1cm}
 \noindent
@@ -88,29 +89,11 @@ In Katastrophengebieten oder Verzögerungstolerante Netzwerke (engl. Delay-Toler
 \item Anforderungsanalyse
 \end{itemize}
 
-\section{Hintergrund und verwandte Arbeiten}
-
-\subsection{DTN-Protokollimplementierungen}
-[PLATZHALTER] Generelle \textbf{kurze} Einführung in die verschiedenen DTN-Implementierungen. 
-\subsection{ION}
-[PLATZHALTER] Kurze Erläuterung der ION DTN Implementation.
-\subsection{CORE}
-[PLATZHALTER] kurze Erläuterung zu CORE.\par
-
-\section{Methodik}
-
-\begin{itemize}
-\item Erklärungen warum wir genau diese Frameworks gewählt haben
-\item kurze Erläuterungen zu den Szenarien die wir uns ausgedacht haben
-\end{itemize}
-
 \section{Implementation}
 
 \subsection{Shell Skripte}
 \subsubsection{Setup}
 \subsubsection{Start}
-\subsubsection{...}
-\subsection{Verknüpfung von ION und CORE}
 \section{Szenarien}
 \subsection{Bundle Flooding}
 Das erste Szenario ist die Simulation eines Bundle Flooding Angriffs auf ein Netzwerkelement, das als Verbindungsstück zwischen einem Satelliten und dem Mission Control Center fungiert. Die für die Simulation genutzte Netzwerktopologie (siehe Abb. [PLATZHALTER]) besteht aus fünf Elementen, welche im Common Open Research Emulator durch den \textbf{Router} Knotentypen emuliert werden.\par
@@ -125,13 +108,14 @@ Ein wichtiger Faktor zum Erfolg dieses Angriffes, ist die von ION gegebene Mögl
 Zur Visualisierung der Attacke dienen zwei Shell-Skripte, welche  die Anzahl der auf jedem Knoten eingelagerten Bundles zeigen, sowie ein Skript, das den Ping von \textit{n1} zum \textit{Satelliten} visualisiert. Dieses Skript nutzt dabei zur besseren Übersicht die von ION zu Verfügung gestellten watch characters. So wird für jedes versendete Bundle einmal das Zeichen 'a' ausgegeben. Erreicht das auf so ausgelöste Acknowledgement \textit{n1}, wird desweiteren die RTT angezeigt. Die zur Visualisierung benötigten Skripte werden automatisch mit Start des Szenarios ausgeführt.
 
 \subsection{DDoS Flooding}
-Eine Weiterentwicklung des ersten Szenarios ist die Simulation eines Bundle Flooding Angriffs auf ein Netzwerkelement, das als Verbindungsstück zwischen einem Satelliten und dem Mission Control Center fungiert. Die für die Simulation genutzte Netzwerktopologie (siehe Abb. [PLATZHALTER]) besteht aus fünf Elementen, welche im Common Open Research Emulator durch den \textbf{Router} Knotentypen emuliert werden.\par
+Eine Weiterentwicklung des ersten Szenarios ist die Simulation eines von mehreren Angreifern gleichzeitig ausgeführter Bundle Flooding Angriff auf das gleiche Verbindungsstück zwischen einem Satelliten und dem Mission Control Center wie im Bundle Flooding Szenario. Die für die Simulation genutzte Netzwerktopologie (siehe Abb. [PLATZHALTER]) besteht nun aus neun Elementen, welche im Common Open Research Emulator durch den \textbf{Router} Knotentypen emuliert werden.\par
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.5\textwidth]{flooding}
-\caption{Netzwerktopologie des Bundle Flooding Szenarios}
+\includegraphics[width=0.5\textwidth]{ddos}
+\caption{Netzwerktopologie des DDoS Szenarios}
 \end{figure}
-
+Das Grundprinzip des Angriffes ist dem im vorherigen Szenarion Verwendeten sehr ähnlich. Hier wird jedoch \textit{n3} deutlich stärker ausgelastet, da nicht nur ein Angreifer Bundles sendet, sondern fünf. \par
+Tatsächlich ist die Belastung so hoch, dass \textit{n3} wenige Sekunden nach Start des Angriffes kaum noch Bundles annehmen kann. Es kommt also zu einer Ansammlung von Bundles auf den Angreiferknoten, welche ihre Bundles nicht mehr schnell genug an \textit{n3} senden können. Ansonsten ist das Ergebnis das Gleiche wie im Bundle Flooding Szenario, wobei der Verbindungsabbruch durch das höhere Bundleaufkommen etwas hier eher auftritt.
 \subsection{Slowloris}
 Im Gegensatz zu den bisher diskutierten Szenarios benötigen Application Layer Denial of Service Angriffe kein bereits kompromittiertes System um zu funktionieren. Das in diesem Abschnitt näher betrachtete Szenario setzt dabei einen Slowloris Angriff erfolgreich um. Wir nutzen in dem Szenario slowloris.py (Version 0.2.2; Yaltirakli, G., 2015)\cite{gkbrkslowloris}, ein Python Skript, welches die Attacke auf das Zielsystem ausführt.\par
 Die hier simulierte Situation ist ein Angriff auf ein Katastrophenfrühwarnsystem. Die Netzwerktopologie (siehe Abb. [Platzhalter]) ist die Folgende:
@@ -153,15 +137,53 @@ Das Ziel des Denial of Service Angriffs ist das Lahmlegen des Zielsystems unter 
 In diesem Szenario wird dieser Effekt durch das Ausführen von dem slowloris.py Skript auf dem Knoten, der den Angreifer simuliert, erreicht. Das Skript baut so viele Verbindungen wie möglich zu dem Satelliten auf und versendet nur Teilanfragen. Dies hat den Effekt, das auf dem Satelliten die Anfragen nie vollständig abgeschlossen werden, und die Verbindungen zum Angreifer bestehen bleiben. Werden auf diese Weise genügend Verbindungen gleichzeitig blockiert, so kann der Satellit von der  Messstation eingehende Verbindungsanfragen nicht annehmen und die Verbindung zwischen Messstation und Kontrollzentrum ist unterbrochen. Die Verbindungsunterbrechung tritt bereits den Bruchteil einer Sekunde nachdem der Angriff gestartet wurde auf und ist somit deutlich schneller als bei dem Bundle Flooding Angriff.\par
 Diese Art Denial of Service Attacke zeichnet sich besonders dadurch aus, dass sie vollkommen vom ION-Netzwerk unabhängig ist, also kein bereits kompromittiertes System innerhalb des Netzwerkes benötigt wird, um erfolgreich die Verbindung zu stören. Ein Angreifer mit ausreichend leistungsstarker Hardware könnte damit sehr einfach sämtlichen Traffic in kritischen Systemen zum Erliegen bringen, sofern diese TCP als Tansportprotokoll nutzen.\par
 Die Visualisierung der Auswirkungen des Angriffes in unserer Netzwerksimulation erfolgt wieder durch ein Shell-Skript, welches das Ergebnis des Pings von Messstation zum Kontrollzentrum in einer Konsole ausgibt. 
-
-\section{Fazit und Ausblick}
-
+\newpage
+\section{Erweiterung}
+Wir haben bei der Planung und Entwicklung dieses Tools Wert darauf gelegt, dass schnell und einfach neue Szenarien integriert werden können.
+\subsection{Aufbau eines virtuellen Netzwerks mit CORE}
+\subsubsection{Start des Common Open Research Emulator}
+CORE (Common Open Research Emulator) ist ein Tool mit welchem man leicht virtuelle Netzwerke aufbauen kann. Als Emulator baut CORE eine Repräsentation eines in Echtzeit laufenden, realen Computernetzwerks auf, anstelle einer Simulation bei der abstrakte Modelle verwendet würden. Diese Emulation kann bei Bedarf auch mit physischen Netzwerken und Routern verbunden werden und bietet eine Umgebung um echte Applikationen und Protokolle zu testen. \cite{core-docs}\par
+Zum Betrieb von CORE ist es wichtig, das der core-daemon im Hintergrund läuft. Der Status des Daemons lässt sich mittels \texttt{sudo service core-daemon status} abfragen. Sollte der daemon nicht gestartet sein. muss \texttt{sudo service core-daemon start} ausgeführt werden. Nun kann man mittels \texttt{core-gui} die graphische Oberfläche von CORE starten. In der folgenden Abbildung ist der Ablauf veranschaulicht.\par
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.7\textwidth]{core-start}
+\caption{Start der CORE-Oberfläche}
+\end{figure}
+Das User Interface von CORE zu erklären würde im Rahmen dieses Dokuments zu weit führen, allerdings gibt es eine ausführliche englische Dokumentation zu den einzelnen Knotentypen, dem User Interface und vielen weiteren Themen direkt von CORE. Diese ist unter dem folgenden Link zu finden: \url{https://coreemu.github.io/core/}\par
+\subsubsection{Aufbau eines Netzwerks mit CORE}
+Die Netzwerke in unseren Szenarien bestehen der Einfachheit halber ausschliesslich aus Knoten vom Typ Router, welche durch physische Links verbunden sind. Das Verwenden von anderen Knotentypen und Wireless LAN ist natürlich möglich, aber nicht von uns getestet.\par
+Wireless LAN in CORE unterstützt sogenanntes Mobility Scripting, wodurch sich Knoten zur Laufzeit aus der Verbindungsreichweite entfernen können, um Verbindungsabbrüche zu erzwingen. Diese Verbindungsabbrüche in CORE haben \textbf{keine} Auswirkung auf die Verbindung der ION Nodes.
+\subsubsection{Integration von ION}
+Die Integration von ION in CORE erfolgt in drei einfachen Schritten, die auf jedem Knoten ausgeführt werden müssen.
 \begin{itemize}
-\item kurze Zusammenfassung
-\item welche Anforderungen wurden erfüllt?
-\item was könnte verbessert werden?
-\item warum konnten verschiedene Anforderungen nicht erfüllt werden (hoffentlich nicht benötigt)
-\end{itemize}
+\item Einrichten eines UserDefined-Services zum Ausführen eines Setup-Skripts
+\item Zuweisen der von ION benötigen Verzeichnisse
+\item Anlegen des Setup-Skripts
+\end{itemize}\par
+Zunächst muss ein Service eingerichtet werden, der ein Setup-Skript ausführt, welches dann ION auf dem Knoten startet. Diesen legt man wie folgt an: Doppelklick auf den Knoten $\rightarrow$ Services $\rightarrow$ UserDefined. Im Tab 'Files'  den File name "setup.sh" (ohne "") eingeben und auf den Button neben der Eingabeleiste klicken. 'Use text below for file contents' auswählen und in die Box darunter das folgende Skript kopieren.
+\begin{verbatim}
+    dirn=`dirname $SESSION_FILENAME`
+    sh $dirn/nodeSetup.sh
+\end{verbatim}
+Die Backticks(`) um 'dirname [...]' können evtl. nicht richtig aus diesem Dokument kopiert werden und müssen manuell gesetzt werden.\par
+Als nächstes müssen die Verzeichnisse zugewiesen werden. Dazu auf den Tab 'Directories' wechseln, unten rechts auf den 'Verzeichnis hinzufügen' Button klicken und /var/ion hinzufügen.\par
+Zuletzt muss dem Knoten noch mitgeteilt werden, dass das in Schritt 1 angelegte 'setup.sh' Skript ausgeführt werden soll. Dies geschieht im 'Startup/Shutdown' Tab. In die Zeile unter 'Startup commands' 'sh setup.sh' schreiben und auf den 'Hinzufügen' Button klicken. Danach kann man die Einstellungen durch Klick auf 'Apply' anwenden und der Knoten ist konfiguriert.
+\subsubsection{nodeSetup.sh}
+Das Skript 'nodeSetup.sh' wird von CORE ausgeführt sobald ein Knoten gestartet wurde und sorgt dafür, dass auf den Knoten ION läuft. Es muss immer im gleichen Verzeichnis liegen wie die <Szenario>.imn Datei. Für die genaue Verzeichnisstruktur, kann man jedes beliebige Szenario hernehmen, die Struktur ist immer gleich.\par
+Wir empfehlen ein schon vorhandenes nodeSetup.sh Skript aus einem Szenario-Ordner zu kopieren und zu modifizieren. Der Teil in dem verschiedene ION-Services gestartet werden, ist die if-else-Abfrage nach \texttt{ionstart -I n\$IPN\_NODE\_NUMBER.rc >> \$LOG}. Sollte zudem eine Visualisierung der Anzahl von Bundles auf jedem Knoten gewünscht sein, muss sichergestellt werden, dass unter der if-else-Abfrage die Zeile \texttt{sh bundlecount.sh \$IPN\_NODE\_NUMBER} vorhanden ist. Mehr dazu im Abschnitt 'Visualisierung des Szenarios'.
+\subsection{Konfiguration von ION}
+Die Konfigurationsdateien ION nutzt um die Nodes zu initialisieren sind komplex genug um dazu eine eigene Dokumentation zu schreiben. Eine grobe Übersicht liefert der ION Deployment Guide im ion-open-source-4.0.0 Ordner,der sich im dtn-dos Verzeichnis befindet. Ausserdem gibt es eine Serie an Videos auf YouTube, welche sich mit ION befasst. Das die Konfiguration behandelnde Video kann man unter folgendem Link finden: \url{https://www.youtube.com/watch?v=gEMoxbUz-jo&t=1s}. In diesem Video wird nicht erklärt, dass man die einzelnen Konfigurationsdateien auch in einer Datei zusammenfassen kann. Deshalb lohnt es sich auch, zusätzlich die Konfigurationsdateien in unseren Szenarien anzusehen.  
+\subsection{Visualisierung des Szenarios}
+Jedes Szenario hat unterschiedliche Anforderungen an die Visualisierung. Für unsere Szenarien haben wir 3 Arten an Visualisierungen entwickelt. 
+\subsection{bundlecount.sh und bundlewatch.sh}
+Die beiden Skripte bundlecount.sh und bundlewatch.sh zeigen die Anzahl an Bundles auf jeder Node. Dabei wird bundlecount.sh auf allen Nodes im Hintergrund ausgeführt und schreibt pro Sekunde einmal die Anzahl der auf der Node gespeicherten Bundles in eine Logdatei, die dann von bundlewatch.sh ausgelesen und in einem Terminalfenster visuell aufbereitet wird.\par
+Damit diese Visualisierung funktioniert, müssen die beiden Skripte im Verzeichnis des Szenarios liegen. Desweiteren muss im nodeSetup.sh Skript auf jeder Node das bundlecount.sh Skript gestartet werden.
+\subsection{pingvis.sh}
+Dieses Skript wird vom start\_dtndos.sh Skript ausgeführt, um zu verfolgen, wann die Verbindung zwischen zwei Nodes abbricht. Dazu wird die Ausgabe des Bundle Pings auf einer Node in ein Logfile umgeleitet, welches vom pingvis Skript dann in einem Terminal ausgegeben wird.\par
+Auf den Nodes sind standardmässig die Watch Characters von ION aktiviert. Dies zeigt sich in der Ausgabe des Skriptes. Jedes Mal, wenn ein Bundle losgeschickt wird, wird einmal das Zeichen 'a' ausgegeben. Bestätigt die angepingte Node den Eingang des Signals, so wird ausserdem die Response mit  Round-Trip-Time ausgegeben. Gibt es einen Verbindungsabbruch, erkennt man dies an dem Fehlen ebendieser Antwort auf die gesendeten Bundles. Im Terminal tauchen dann nur noch die 'a''s für gesendete Anfragen auf. 
+\subsection{othervis.sh}
+Das othervis.sh Skript ist für alle weiteren Visualisierungen gedacht. Es wird zum Beispiel im Slowloris-Szenario genutzt, um anzuzeigen wann genau der Angriff startet. 
+
 
 
 
