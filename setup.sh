@@ -32,10 +32,7 @@ else
     echo "Changing directories -> /core..."
     cd core
     echo "Installing CORE locally..."
-    ./bootstrap.sh
-    ./configure
-    make
-    sudo make install
+    sh install.sh
     echo "Changing directories -> dtn-dos ..."
     cd ..
     echo "Starting CORE so default configs get generated..."
@@ -46,6 +43,15 @@ else
     echo -e "\e[39m"
 
 fi 
+
+echo "======================="
+echo "Getting needed packages"
+echo "======================="
+echo " "
+sudo apt install ncat
+sudo apt install xterm
+
+
 
 echo "==============="
 echo "Setting up DTN"
@@ -77,10 +83,10 @@ else
     echo "Changing directories -> ion-4.0.0/... "
     cd ion-open-source-4.0.0
     echo "Installing... "
-    ./configure 1> /dev/null
-    make 1> /dev/null
-    make install 1> /dev/null
-    ldconfig 1> /dev/null
+    ./configure
+    make
+    sudo make install
+    sudo ldconfig
     echo -e "\e[32mFinished installing ION-DTN."
     cd ..
 fi
