@@ -94,4 +94,42 @@ This scenario has a few automated services, which get started when the scenario 
 
 The bundle ping visualization uses ION's watch characters, making it easy to track when bundles are sent out (signified by a single 'a' character in the terminal). When a ping gets through, the time it took gets printed as well. A few seconds after ATK starts the flooding attack, no more bundles from GRC get through to SAT and the output of the bping visualization will just be a long line of "a"'s.
 
+### DDoS
+A scenario simulating transmission from ground control to a satellite with multiple attackers flooding the node connecting GC to the satellite with bundles. This effectively halts communication between GC and the satellite.
+Topology:
+```(Every attacker has a seperate connection to CON, I can't model it this way unfortunately)
+           ATK
+            O
+          O─┼─O
+         ATK│ATK
+ O────┐   O─┼─O
+GRC   │  ATK│ATK
+      │     │
+      O─────O─────O
+     REL   CON   SAT
+
+GRC = Ground Control, REL = Relay
+ATK = Attacker, CON = Connecting node
+SAT = Satellite 
+```
+The outcome is pretty much the same as in the Flooding Scenario, however after a while bundles start to pile up on the attacking nodes, so it seems that ION either slows down spammy connections or can't handle the massive influx of bundles.
+
+### Slowloris
+A scenario simulating transmission from a monitoring system (e.g. a tsunami warning buoy) to a control center via satellite. A single attacker targets the satellite with a slowloris attack, trying to stop communication between monitoring system and control center.
+Topology:
+```
+        SAT
+ O───────O──┐
+MON      │  │
+         │  └─O───O 
+      O──┘   CTL EWS
+     ATK  
+
+EWS = Emergency warning system, MON = Monitoring system
+ATK = Attacker, CTL = Control center
+SAT = Satellite
+```
+Slowloris is an exceptionally effective attack, stopping traffic from MON to CTL almost instantly. It works by opening a huge amount of TCP connections from ATK to SAT and holding them open for as long as possible, exhausting SAT's resources and thus denying MON and CTL the opportunity of opening connections themselves. Another important point is that the attack doesn't use many resources either.
+
+
 *More coming soon, still in development!*
