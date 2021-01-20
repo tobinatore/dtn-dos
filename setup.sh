@@ -26,12 +26,17 @@ else
         echo -e "\e[93mWARNING: Docker is installed, the default iptable rules will block CORE traffic!"
         echo -e "\e[39m"
     fi
-    
     echo "Fetching git repository at https://github.com/coreemu/core.git..."
     git clone https://github.com/coreemu/core.git
+    echo "Installing dependencies..."
+    sudo apt-get install -y autotools-dev autoconf
     echo "Changing directories -> /core..."
     cd core
     echo "Installing CORE locally..."
+    ./bootstrap.sh
+    ./configure
+    make
+    sudo make install
     sh install.sh
     echo "Changing directories -> dtn-dos ..."
     cd ..
