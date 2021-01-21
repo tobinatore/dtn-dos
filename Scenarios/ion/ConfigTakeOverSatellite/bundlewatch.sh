@@ -16,12 +16,15 @@ while [ 1 ]
 do
 for i in `seq 1 $NUMBER_NODES`
 do
-    NODE="n$i"
-    if [ -f "$NODE"_bundles.log ]
-    then
-        echo "Bundles at node $NODE: $(head -n 1 "$NODE"_bundles.log)"
-    else
-       echo "Bundles at node $NODE: n/a"
+    if [ ! $i -eq "5" ]
+    	then
+        NODE="n$i"
+        if [ -f "$NODE"_bundles.log ]
+        then
+	    echo "Bundles at node $NODE: $(head -n 1 "$NODE"_bundles.log)"
+        else
+           echo "Bundles at node $NODE: n/a"
+        fi
     fi
 done
 sleep 1.5
