@@ -35,8 +35,8 @@ elif [ $IPN_NODE_NUMBER -eq "4" ]; then
     lgagent ipn:4.2 >> $LOG2 &
     
 elif [ $IPN_NODE_NUMBER -eq "5" ]; then
+    sleep 25
     echo "Starting ncat on node 5" >> $LOG2
-    sleep 1
     cat script | ncat 10.0.3.1 200 --udp >> $LOG2
     echo "stopped ncat on node 5" >> $LOG2
 fi

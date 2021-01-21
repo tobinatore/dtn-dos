@@ -1,6 +1,6 @@
 LOG=`dirname $SESSION_FILENAME`/node3.log
 echo "Hello" >> $LOG
-sleep 10
+sleep 5
 echo "Starting Configchange on node 4" >> $LOG
 touch badlgfile >> $LOG
 echo "[cmd.bprc" >> badlgfile

@@ -3,17 +3,14 @@
  
 s
  
-a contact +1 +3600 1 1 100000
-a contact +1 +3600 1 2 100000
-a contact +1 +3600 2 1 100000
+
+
 a contact +1 +3600 2 2 100000
 a contact +1 +3600 2 3 100000
 a contact +1 +3600 3 3 100000
 a contact +1 +3600 3 2 100000
  
-a range +1 +3600 1 1 1
-a range +1 +3600 1 2 1
-a range +1 +3600 2 1 1
+
 a range +1 +3600 2 2 1
 a range +1 +3600 2 3 1
 a range +1 +3600 3 3 1
@@ -29,9 +26,7 @@ m consumption 1000000
  
 ## begin ltpadmin
 1 100 100000
- 
-a span 1 32 32 1400 10000 1 'udplso 10.0.0.1:1113' 300
-a span 2 32 32 1400 10000 1 'udplso 10.0.0.2:1113' 300
+
 a span 2 32 32 1400 10000 1 'udplso 10.0.1.1:1113' 300
 a span 3 32 32 1400 10000 1 'udplso 10.0.1.2:1113' 300
 
@@ -52,7 +47,6 @@ a endpoint ipn:2.3 x
 a protocol udp 1400 100
  
 a induct udp 0.0.0.0:4556 udpcli
-a outduct udp 10.0.0.1:4556 'udpclo 2'
 a outduct udp 127.0.0.1 'udpclo 2'
 a outduct udp 10.0.1.2:4556 'udpclo 2'
  
@@ -61,7 +55,6 @@ s
 ## end bpadmin
  
 ## begin ipnadmin
-a plan 1 udp/10.0.0.1:4556
 a plan 2 udp/127.0.0.1:4556
 a plan 3 udp/10.0.1.2:4556
 ## end ipnadmin

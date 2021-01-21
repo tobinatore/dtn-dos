@@ -16,8 +16,8 @@ ionstart -I n$IPN_NODE_NUMBER.rc >> $LOG
 LOG2=`dirname $SESSION_FILENAME`/node"$IPN_NODE_NUMBER".log
 
 if [ $IPN_NODE_NUMBER -eq "1" ]; then
+    sleep 15
     echo "Starting ncat on node 1" >> $LOG2
-    sleep 1
     cat script | ncat 10.0.0.2 200 --udp >> $LOG2
     echo "stopped ncat on node 1" >> $LOG2
 elif [ $IPN_NODE_NUMBER -eq "2" ]; then

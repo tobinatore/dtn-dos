@@ -23,7 +23,7 @@ echo "s protocol udp" >> goodCommandfile.bprc
 echo "goodCommandfile.bprc created" >> $LOG
 echo "Starting bpadmin" >> $LOG
 bpadmin goodCommandfile.bprc >> $LOG
-echo "node 2 has now access to protocolls udp" >> $LOG
+echo "node 2 has now access again to protocolls" >> $LOG
 echo "node 2 sends queued bundles" >> $LOG
 
 
