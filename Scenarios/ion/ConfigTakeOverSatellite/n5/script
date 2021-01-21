@@ -1,5 +1,5 @@
 LOG=`dirname $SESSION_FILENAME`/node3.log
-echo "Hello" >> $LOG
+echo "Script started" >> $LOG
 sleep 5
 echo "Starting Configchange on node 4" >> $LOG
 touch badlgfile >> $LOG
