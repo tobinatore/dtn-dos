@@ -144,7 +144,7 @@ Dieses Szenario simuliert einen Angriff auf die Konfigurationsdaten eines \texti
 \end{figure}
 Das Ziel des Angriffs ist es über den kompromittierten Knoten den \textit{Sateliten} Lahmzulegen.
 Dabei ist der Knoten \textit{n3} wieder so manipuliert, dass auf diesem im Hintergrund \texttt{ncat} läuft. Dazu wird auch angenommen, dass auf dem \textit{Satelliten} ein Tool namens \texttt{lgagent} läuft, womit der \textit{Satellit} seine Kontaktdaten (Wann ist welcher Knoten erreichbar) aktuell halten kann.
-Der \textit{Angreifer} sendet nun über ncat ein Skript, welches auf dem Knoten \textit{n3} ein tool namens \texttt{lgsend} ausführt. \texttt{lgsend} sendet nun über das Bundle Protocol ein Commandfile an den \textit{Satelliten} welches der \texttt{lgagent} ohne irgendwelche Sicherheitsüberprüfungen direkt ausführt, wodurch der \textit{Satellit} offline geht.
+Der \textit{Angreifer} sendet nun über ncat ein Skript, welches auf dem Knoten \textit{n3} ein Tool namens \texttt{lgsend} ausführt. \texttt{lgsend} sendet nun über das Bundle Protocol ein Commandfile an den \textit{Satelliten} welches der \texttt{lgagent} ohne irgendwelche Sicherheitsüberprüfungen direkt ausführt, wodurch der \textit{Satellit} offline geht.
 Das Szenario wird visualisiert über das Skript \texttt{othervis.sh} und die beiden Skripte die auch beim Bundle Flooding Szenario im Einsatz sind.
 
 \subsection{Slowloris}
@@ -168,34 +168,6 @@ Das Ziel des Denial of Service Angriffs ist das Lahmlegen des Zielsystems unter 
 In diesem Szenario wird dieser Effekt durch das Ausführen von dem slowloris.py Skript auf dem Knoten, der den Angreifer simuliert, erreicht. Das Skript baut so viele Verbindungen wie möglich zu dem Satelliten auf und versendet nur Teilanfragen. Dies hat den Effekt, das auf dem Satelliten die Anfragen nie vollständig abgeschlossen werden, und die Verbindungen zum Angreifer bestehen bleiben. Werden auf diese Weise genügend Verbindungen gleichzeitig blockiert, so kann der Satellit von der  Messstation eingehende Verbindungsanfragen nicht annehmen und die Verbindung zwischen Messstation und Kontrollzentrum ist unterbrochen. Die Verbindungsunterbrechung tritt bereits den Bruchteil einer Sekunde nachdem der Angriff gestartet wurde auf und ist somit deutlich schneller als bei dem Bundle Flooding Angriff.\par
 Diese Art Denial of Service Attacke zeichnet sich besonders dadurch aus, dass sie vollkommen vom ION-Netzwerk unabhängig ist, also kein bereits kompromittiertes System innerhalb des Netzwerkes benötigt wird, um erfolgreich die Verbindung zu stören. Ein Angreifer mit ausreichend leistungsstarker Hardware könnte damit sehr einfach sämtlichen Traffic in kritischen Systemen zum Erliegen bringen, sofern diese TCP als Tansportprotokoll nutzen.\par
 Die Visualisierung der Auswirkungen des Angriffes in unserer Netzwerksimulation erfolgt wieder durch ein Shell-Skript, welches das Ergebnis des Pings von Messstation zum Kontrollzentrum in einer Konsole ausgibt.
-<<<<<<< Updated upstream
-\subsection{Config Take Over}
-Dieses Szenario simuliert einen Angriff auf die Konfigurationsdaten eines kompromittierten Knotens. Die bei dem Szenario verwendete Netzwerktopologie besteht aus einem Angreifer außerhalb des ION-Netzwerks und zwei Knoten innerhalb des Netzwerks, wobei einer davon kompromittiert ist.
-\par
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.5\textwidth]{cto}
-\caption{Netzwerktopologie des Config Take Over Szenarios}
-\end{figure}
-Das Ziel des Angriffs ist es den \textit{kompromittierten Knoten} so zu Sabotieren, dass dieser keine Bundles mehr verschickt und die von ihm ausgehenden Bundles sich bei ihm stauen.
-Dafür muss der eine \textit{Knoten} durch einen Phishing- Angriff oder einem ähnlichen so manipuliert sein, dass dadurch im Hintergrund nun \texttt{ncat} ausgeführt wird. \texttt{ncat} liest dabei die Daten die auf einem spezifischen Port bei dem Knoten ankommen und pipt sie dann in einen Bash-Befehl.
-Der \textit{Angreifer} sendet über \texttt{ncat} nun ein Skript, welches die Konfiguraionsdaten von ION bzw. vom Bundle Protocol so ändert, dass der \textit{Knoten} über das Bundle Protocol nicht mehr auf die Transportprotokolle zugreifen kann. Dadurch stauen sich die Bundles beim Bundleausgang auf dem angegriffenen Knoten.
-Nach 10 Sekunden gibt das Skript über einen erneuten Eingriff in die Konfigurationsdateien von ION bzw. BP die Transportprotokolle wieder frei, sodass die gestauten Bundles nun ankommen.
-Um das Szenario zu visualisieren wird das Skript \texttt{othervis.sh} im spezifischem Szenarioordner benutzt.
-\subsection{Config Take Over Satellite}
-Dieses Szenario simuliert einen Angriff auf die Konfigurationsdaten eines \textit{Satelliten} über einen \textit{kompromittierten Knoten}. Die bei dem Szenario verwendete Netzwerktopologie besteht aus einem \textit{Angreifer} außerhalb des ION-Netzwerks und ansonsten dem gleichen Aufbau wie beim Bundle FLooding Szenario, nur dass die Verbindung zum \textit{Satelliten} stabil ist, also nicht alle 30 Sekunden unterbrochen wird und dass der Knoten \textit{n3} kompromittiert ist.
-\par
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.5\textwidth]{ctos}
-\caption{Netzwerktopologie des Config Take Over Satellite Szenarios}
-\end{figure}
-Das Ziel des Angriffs ist es über den kompromittierten Knoten den \textit{Sateliten} Lahmzulegen.
-Dabei ist der Knoten \textit{n3} wieder so manipuliert, dass auf diesem im Hintergrund \texttt{ncat} läuft. Dazu wird auch angenommen, dass auf dem \textit{Satelliten} ein Tool namens \texttt{lgagent} läuft, womit der \textit{Satellit} seine Kontaktdaten (Wann ist welcher Knoten erreichbar) aktuell halten kann.
-Der \textit{Angreifer} sendet nun über ncat ein Skript, welches auf dem Knoten \textit{n3} ein tool namens \texttt{lgsend} ausführt. \texttt{lgsend} sendet nun über das Bundle Protocol ein Commandfile an den \textit{Satelliten} welches der \texttt{lgagent ohne irgendwelche Sicherheitsüberprüfungen direkt ausführt, wodurch der \textit{Satellit} offline geht.
-Das Szenario wird visualisiert über das Skript \texttt{othervis.sh} und die beiden Skripte die auch beim Bundle Flooding Szenario im Einsatz sind.
-=======
->>>>>>> Stashed changes
 \newpage
 \section{Erweiterung}
 Wir haben bei der Planung und Entwicklung dieses Tools Wert darauf gelegt, dass schnell und einfach neue Szenarien integriert werden können.
@@ -242,13 +214,6 @@ Dieses Skript wird vom start\_dtndos.sh Skript ausgeführt, um zu verfolgen, wan
 Auf den Nodes sind standardmässig die Watch Characters von ION aktiviert. Dies zeigt sich in der Ausgabe des Skriptes. Jedes Mal, wenn ein Bundle losgeschickt wird, wird einmal das Zeichen 'a' ausgegeben. Bestätigt die angepingte Node den Eingang des Signals, so wird ausserdem die Response mit  Round-Trip-Time ausgegeben. Gibt es einen Verbindungsabbruch, erkennt man dies an dem Fehlen ebendieser Antwort auf die gesendeten Bundles. Im Terminal tauchen dann nur noch die 'a's für gesendete Anfragen auf. 
 \subsubsection{othervis.sh}
 Das othervis.sh Skript ist für alle weiteren Visualisierungen gedacht. Es wird zum Beispiel im Slowloris-Szenario genutzt, um anzuzeigen, wann genau der Angriff startet. 
-<<<<<<< Updated upstream
-
-
-
-
-=======
->>>>>>> Stashed changes
 \newpage
 \printbibliography
 \end{document}
