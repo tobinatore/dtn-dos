@@ -136,7 +136,32 @@ Wie auch in den vorherigen Szenarien werden die einzelnen Knoten durch CORE Rout
 Das Ziel des Denial of Service Angriffs ist das Lahmlegen des Zielsystems unter minimaler Verwendung von Netzwerkressourcen. Dies wird erreicht, indem das Angreifersystem möglichst viele Verbindungen zum Zielsystem aufbaut und diese so lange wie möglich offenhält.\par
 In diesem Szenario wird dieser Effekt durch das Ausführen von dem slowloris.py Skript auf dem Knoten, der den Angreifer simuliert, erreicht. Das Skript baut so viele Verbindungen wie möglich zu dem Satelliten auf und versendet nur Teilanfragen. Dies hat den Effekt, das auf dem Satelliten die Anfragen nie vollständig abgeschlossen werden, und die Verbindungen zum Angreifer bestehen bleiben. Werden auf diese Weise genügend Verbindungen gleichzeitig blockiert, so kann der Satellit von der  Messstation eingehende Verbindungsanfragen nicht annehmen und die Verbindung zwischen Messstation und Kontrollzentrum ist unterbrochen. Die Verbindungsunterbrechung tritt bereits den Bruchteil einer Sekunde nachdem der Angriff gestartet wurde auf und ist somit deutlich schneller als bei dem Bundle Flooding Angriff.\par
 Diese Art Denial of Service Attacke zeichnet sich besonders dadurch aus, dass sie vollkommen vom ION-Netzwerk unabhängig ist, also kein bereits kompromittiertes System innerhalb des Netzwerkes benötigt wird, um erfolgreich die Verbindung zu stören. Ein Angreifer mit ausreichend leistungsstarker Hardware könnte damit sehr einfach sämtlichen Traffic in kritischen Systemen zum Erliegen bringen, sofern diese TCP als Tansportprotokoll nutzen.\par
-Die Visualisierung der Auswirkungen des Angriffes in unserer Netzwerksimulation erfolgt wieder durch ein Shell-Skript, welches das Ergebnis des Pings von Messstation zum Kontrollzentrum in einer Konsole ausgibt. 
+Die Visualisierung der Auswirkungen des Angriffes in unserer Netzwerksimulation erfolgt wieder durch ein Shell-Skript, welches das Ergebnis des Pings von Messstation zum Kontrollzentrum in einer Konsole ausgibt.
+\subsection{Config Take Over}
+Dieses Szenario simuliert einen Angriff auf die Konfigdaten eines kompromittierten Knotens. Die bei dem Szenario verwendete Netzwerktopologie besteht aus einem Angreifer außerhalb des ION-Netzwerks und 2 Knoten innerhalb des Netzwerks, wobei einer davon kompromittiert ist.
+\par
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{cto}
+\caption{Netzwerktopologie des Config Take Over Szenarios}
+\end{figure}
+Das Ziel des Angriffs ist es den \textit{kompromittierten Knoten} so Lahmzulegen, dass dieser keine Bundles mehr verschickt und die von ihm ausgehenden Bundles sich bei ihm stauen.
+Dafür muss der eine \textit{Knoten} durch ein Phishing- Angriff oder einem ähnlichen so kompromittiert sein, dass dadurch im Hintergrund nun ncat ausgeführt wird. Ncat liest dabei die Daten die auf einem spezifischen Port bei dem Knoten ankommen und pipt sie dann in ein Bash-Befehl.
+Der \textit{Angreifer} sendet über ncat nun ein Skript, welches die Konfiguraionsdaten von ION bzw. vom Bundle Protocoll so ändert, dass der \textit{Knoten} über das Bundleprotokoll nicht mehr auf die Transportprotokolle zugreifen kann. Dadurch stauen sich die Bundles beim Bundleausgang auf dem angegriffenen Knoten.
+Nach einer [gewissen Zeit] gibt das Skript über einen erneuten Eingriff in die Konfigurationsdateien von ION bzw. BP die Transportprotokolle wieder frei sodass die gestauten Bundles nun ankommen.
+Um das Szenario zu visualisieren wird das Skript othervis.sh im spezifischem Szenarioordner benutzt.
+\subsection{Config Take Over Satellite}
+Dieses Szenario simuliert einen Angriff auf die Konfigdaten eines \textit{Satelliten} über einen \textit{kompromittierten Knoten}. Die bei dem Szenario verwendete Netzwerktopologie besteht aus einem \textit{Angreifer} außerhalb des ION-Netzwerks und ansonsten dem gleichen Aufbau wie beim Bundle FLooding Szenario, nur dass die Verbindung zum \textit{Satelliten} stabil ist, also nicht alle 30 Sekunden unterbrochen wird und dass der Knoten \textit{n3} kompromittiert ist.
+\par
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{ctos}
+\caption{Netzwerktopologie des Config Take Over Satellite Szenarios}
+\end{figure}
+Das Ziel des Angriffs ist es über den kompromittierten Knoten den \textit{Sateliten} Lahmzulegen.
+Dabei ist wieder der Knoten \textit{n3} so kompromittiert, dass auf diesem im Hintergrund ncat läuft. Dazu wird auch angenommen dass auf dem \textit{Satelliten} ein Tool names lgagent läuft, womit der \textit{Satellite} seine Kontaktdaten (Wann ist welcher Knoten erreichbar) aktuell halten kann.
+Der \textit{Angreifer} sendet nun über ncat ein Skript welches auf dem Knoten \textit{n3} ein tool namens lgsend ausführt. Lgsend sendet nun über das Bundle Protokoll ein Commandfile an den \textit{Satelliten} welches der lgagent ohne irgendwelche Sicherheitsüberprüfungen direkt ausführt, wodurch der \textit{Satellite} offline geht.
+Das Szenario wird durch 
 \newpage
 \section{Erweiterung}
 Wir haben bei der Planung und Entwicklung dieses Tools Wert darauf gelegt, dass schnell und einfach neue Szenarien integriert werden können.
