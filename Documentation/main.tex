@@ -139,10 +139,10 @@ Dieses Szenario simuliert einen Angriff auf die Konfigurationsdaten eines kompro
 \caption{Netzwerktopologie des Config Take Over Szenarios}
 \end{figure}
 Das Ziel des Angriffs ist es den \textit{kompromittierten Knoten} so zu Sabotieren, dass dieser keine Bundles mehr verschickt und die von ihm ausgehenden Bundles sich bei ihm stauen.
-Dafür muss der eine \textit{Knoten} durch einen Phishing- Angriff oder einem ähnlichen so manipuliert sein, dass dadurch im Hintergrund nun ncat ausgeführt wird. Ncat liest dabei die Daten die auf einem spezifischen Port bei dem Knoten ankommen und pipt sie dann in einen Bash-Befehl.
-Der \textit{Angreifer} sendet über ncat nun ein Skript, welches die Konfiguraionsdaten von ION bzw. vom Bundle Protocol so ändert, dass der \textit{Knoten} über das Bundle Protocol nicht mehr auf die Transportprotokolle zugreifen kann. Dadurch stauen sich die Bundles beim Bundleausgang auf dem angegriffenen Knoten.
+Dafür muss der eine \textit{Knoten} durch einen Phishing- Angriff oder einem ähnlichen so manipuliert sein, dass dadurch im Hintergrund nun \texttt{ncat} ausgeführt wird. \texttt{ncat} liest dabei die Daten die auf einem spezifischen Port bei dem Knoten ankommen und pipt sie dann in einen Bash-Befehl.
+Der \textit{Angreifer} sendet über \texttt{ncat} nun ein Skript, welches die Konfiguraionsdaten von ION bzw. vom Bundle Protocol so ändert, dass der \textit{Knoten} über das Bundle Protocol nicht mehr auf die Transportprotokolle zugreifen kann. Dadurch stauen sich die Bundles beim Bundleausgang auf dem angegriffenen Knoten.
 Nach 10 Sekunden gibt das Skript über einen erneuten Eingriff in die Konfigurationsdateien von ION bzw. BP die Transportprotokolle wieder frei, sodass die gestauten Bundles nun ankommen.
-Um das Szenario zu visualisieren wird das Skript othervis.sh im spezifischem Szenarioordner benutzt.
+Um das Szenario zu visualisieren wird das Skript \texttt{othervis.sh} im spezifischem Szenarioordner benutzt.
 \subsection{Config Take Over Satellite}
 Dieses Szenario simuliert einen Angriff auf die Konfigurationsdaten eines \textit{Satelliten} über einen \textit{kompromittierten Knoten}. Die bei dem Szenario verwendete Netzwerktopologie besteht aus einem \textit{Angreifer} außerhalb des ION-Netzwerks und ansonsten dem gleichen Aufbau wie beim Bundle FLooding Szenario, nur dass die Verbindung zum \textit{Satelliten} stabil ist, also nicht alle 30 Sekunden unterbrochen wird und dass der Knoten \textit{n3} kompromittiert ist.
 \par
@@ -152,9 +152,9 @@ Dieses Szenario simuliert einen Angriff auf die Konfigurationsdaten eines \texti
 \caption{Netzwerktopologie des Config Take Over Satellite Szenarios}
 \end{figure}
 Das Ziel des Angriffs ist es über den kompromittierten Knoten den \textit{Sateliten} Lahmzulegen.
-Dabei ist wieder der Knoten \textit{n3} so manipuliert, dass auf diesem im Hintergrund ncat läuft. Dazu wird auch angenommen, dass auf dem \textit{Satelliten} ein Tool names lgagent läuft, womit der \textit{Satellit} seine Kontaktdaten (Wann ist welcher Knoten erreichbar) aktuell halten kann.
-Der \textit{Angreifer} sendet nun über ncat ein Skript, welches auf dem Knoten \textit{n3} ein tool namens lgsend ausführt. Lgsend sendet nun über das Bundle Protocol ein Commandfile an den \textit{Satelliten} welches der lgagent ohne irgendwelche Sicherheitsüberprüfungen direkt ausführt, wodurch der \textit{Satellit} offline geht.
-Das Szenario wird visualisiert über das Skript othervis.sh und die beiden Skripte die auch beim Bundle Flooding Szenario im Einsatz sind.
+Dabei ist der Knoten \textit{n3} wieder so manipuliert, dass auf diesem im Hintergrund \texttt{ncat} läuft. Dazu wird auch angenommen, dass auf dem \textit{Satelliten} ein Tool namens \texttt{lgagent} läuft, womit der \textit{Satellit} seine Kontaktdaten (Wann ist welcher Knoten erreichbar) aktuell halten kann.
+Der \textit{Angreifer} sendet nun über ncat ein Skript, welches auf dem Knoten \textit{n3} ein tool namens \texttt{lgsend} ausführt. \texttt{lgsend} sendet nun über das Bundle Protocol ein Commandfile an den \textit{Satelliten} welches der \texttt{lgagent ohne irgendwelche Sicherheitsüberprüfungen direkt ausführt, wodurch der \textit{Satellit} offline geht.
+Das Szenario wird visualisiert über das Skript \texttt{othervis.sh} und die beiden Skripte die auch beim Bundle Flooding Szenario im Einsatz sind.
 \newpage
 \section{Erweiterung}
 Wir haben bei der Planung und Entwicklung dieses Tools Wert darauf gelegt, dass schnell und einfach neue Szenarien integriert werden können.
