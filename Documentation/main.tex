@@ -77,10 +77,9 @@ Wintersemester 2020/2021
 
 \section{Einleitung}
 
-In Katastrophengebieten oder Verzögerungstolerante Netzwerke (engl. Delay-Tolerant Networking, kurz DTN)  
-[PLATZHALTER] Generelles Intro über Nutzen von DTN in Raumfahrt, Katastrophenhilfe, etc \par
-[PLATZHALTER] Kurz erklären wie das ganze funktioniert\par
-[PLATZHALTER]Überleiten auf Angriffsvektoren $\rightarrow$ unsere Testsuite kommt ins Spiel.\par
+Die Kommunikation in Katastrophengebieten oder besonders im interplanetarer Raum ist, aufgrund von großen Entfernungen und vermehrtem Datenverlust, stark erschwert, sodass gewöhnliche Internetverbindungen keine verlässliche Lösung bieten. Um in diesen Situationen trotzdem stabile Verbindungen zu gewährleisten wird, z.B. von NASA, Delay/Disruption Tolerant Networking (DTN) verwendet.
+DTN ist speziell für Verbindungen mit langer, oder variabler Verzögerung, asymmetrischen Datenraten und vielen Disruptionen konzipiert. DTN funktioniert, in dem es, durch Store-and-Forwarding, Bundles von einer Station (sogennante Nodes) zur nächsten Schickt. Bei Unterbrechung der Verbindung werden die Bundles bei den Nodes zwischengespeichert. Dadurch können Daten inkrementell entlang eines Pfades zum Ziel gesendet werden und es wird keine komplette Verbindung wie bei TCP benötigt. 
+Die erschwerten Bedingungen in der Kommunikation und das Speichern auf Zwischenpunkten machen die Verbindung anfällig für unterschiedliche Denial-of-Service Attacken. Für die Untersuchung von verschiedener solcher Attacken und deren Auswirkung haben wir diese Testsuite entwickelt und so gestalltet, dass sie in Zukunft noch auf weitere Szenarien erweitertert werden kann.  
 
 \section{Implementation}
 \subsection{Shell Skripte}
