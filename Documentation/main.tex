@@ -78,9 +78,9 @@ Wintersemester 2020/2021
 
 \section{Einleitung}
 
-Die Kommunikation in Katastrophengebieten oder besonders im interplanetarer Raum ist, aufgrund von großen Entfernungen und vermehrtem Datenverlust, stark erschwert, sodass gewöhnliche Internetverbindungen keine verlässliche Lösung bieten. Um in diesen Situationen trotzdem stabile Verbindungen zu gewährleisten wird, z.B. von NASA, Delay/Disruption Tolerant Networking (DTN) verwendet.
-DTN ist speziell für Verbindungen mit langer, oder variabler Verzögerung, asymmetrischen Datenraten und vielen Disruptionen konzipiert. DTN funktioniert, in dem es, durch Store-and-Forwarding, Bundles von einer Station (sogennante Nodes) zur nächsten Schickt. Bei Unterbrechung der Verbindung werden die Bundles bei den Nodes zwischengespeichert. Dadurch können Daten inkrementell entlang eines Pfades zum Ziel gesendet werden und es wird keine komplette Verbindung wie bei TCP benötigt. 
-Die erschwerten Bedingungen in der Kommunikation und das Speichern auf Zwischenpunkten machen die Verbindung anfällig für unterschiedliche Denial-of-Service Attacken. Für die Untersuchung von verschiedener solcher Attacken und deren Auswirkung haben wir diese Testsuite entwickelt und so gestalltet, dass sie in Zukunft noch auf weitere Szenarien erweitertert werden kann.  
+Die Kommunikation in Katastrophengebieten oder besonders im interplanetaren Raum ist, aufgrund von großen Entfernungen und vermehrtem Datenverlust, stark erschwert, sodass gewöhnliche Internetverbindungen keine verlässliche Lösung bieten. Um in diesen Situationen trotzdem stabile Verbindungen zu gewährleisten wird, z.B. von NASA, Delay/Disruption Tolerant Networking (DTN) verwendet.
+DTN-Protokolle sind speziell für Verbindungen mit langer, oder variabler Verzögerung, asymmetrischen Datenraten und vielen Disruptionen konzipiert. Diese funktionieren, in dem sie, durch Store-and-Forwarding, Bundles von einem Knoten (engl. Node) zum Nächsten schicken. Bei Unterbrechung der Verbindung werden die Bundles bei den Nodes zwischengespeichert. Dadurch können Daten inkrementell entlang eines Pfades zum Ziel gesendet werden und es wird keine durchgehende Verbindung, wie bei TCP, benötigt. 
+Die erschwerten Bedingungen in der Kommunikation und das Speichern auf Zwischenpunkten, sowie die bisher nicht entwickelten Sicherheitsmechanismen, machen die Verbindung anfällig für unterschiedliche Denial-of-Service Attacken. Für die Untersuchung von verschiedener solcher Attacken und deren Auswirkungen haben wir diese Testsuite entwickelt und so gestaltet, dass sie in Zukunft noch auf weitere Szenarien erweitert werden kann.  
 
 \section{Implementation}
 \subsection{Shell Skripte}
@@ -144,7 +144,7 @@ Dieses Szenario simuliert einen Angriff auf die Konfigurationsdaten eines \texti
 \end{figure}
 Das Ziel des Angriffs ist es über den kompromittierten Knoten den \textit{Sateliten} lahmzulegen.
 Dabei ist der Knoten \textit{n3} wieder so manipuliert, dass auf diesem im Hintergrund \texttt{ncat} läuft. Dazu wird auch angenommen, dass auf dem \textit{Satelliten} ein Tool namens \texttt{lgagent} läuft, womit der \textit{Satellit} seine Kontaktdaten (Wann ist welcher Knoten erreichbar) aktuell halten kann.
-Der \textit{Angreifer} sendet nun über ncat ein Skript, welches auf dem Knoten \textit{n3} ein tool namens \texttt{lgsend} ausführt. \texttt{lgsend} sendet nun über das Bundle Protocol ein Commandfile an den \textit{Satelliten} welches der \texttt{lgagent} ohne irgendwelche Sicherheitsüberprüfungen direkt ausführt, wodurch der \textit{Satellit} offline geht.
+Der \textit{Angreifer} sendet nun über ncat ein Skript, welches auf dem Knoten \textit{n3} ein Tool namens \texttt{lgsend} ausführt. \texttt{lgsend} sendet nun über das Bundle Protocol ein Commandfile an den \textit{Satelliten} welches der \texttt{lgagent} ohne irgendwelche Sicherheitsüberprüfungen direkt ausführt, wodurch der \textit{Satellit} offline geht.
 Das Szenario wird visualisiert über das Skript \texttt{othervis.sh} und die beiden Skripte die auch beim Bundle Flooding Szenario im Einsatz sind.
 
 \subsection{Slowloris}
