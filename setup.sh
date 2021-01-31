@@ -13,6 +13,15 @@ echo '                                 |_|               '
 echo '---------------------------------------------------'
 
 
+# Checking if system is Ubuntu 20.04.1 LTS
+if [ ! "$(lsb_release -d | awk -F"\t" '{print $2}')" == "Ubuntu 20.04.1 LTS" ]
+then
+	echo -e "\e[31mYou're not on Ubuntu 20.0.4.1 LTS!"
+	echo -e "\e[39mExiting."
+	exit 1
+fi
+
+
 echo "======================="
 echo "Getting needed packages"
 echo "======================="
