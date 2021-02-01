@@ -1,8 +1,0 @@
-# INITIALIZE
-# Ion node number: 2
-# Ion config file name: n2.ionconfig
-1 2 n2.ionconfig
-#
-# START
-# Program: rfxclock
-s

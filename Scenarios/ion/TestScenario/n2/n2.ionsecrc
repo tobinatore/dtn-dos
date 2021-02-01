@@ -1,6 +1,0 @@
-# INITIALIZATION
-1
-
-# Select level of "echo control" activities
-# 0 = None; 1 = print to log and stdout
-e 1
