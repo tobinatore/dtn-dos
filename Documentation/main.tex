@@ -6,15 +6,17 @@
 \usepackage[german]{babel}
 \usepackage{csquotes}
 \usepackage{wrapfig}
-\usepackage{biblatex}
+\usepackage[sorting=none]{biblatex}
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{dirtree}
+\usepackage{upquote}
 \usepackage[edges]{forest}
 \definecolor{folderbg}{RGB}{124,166,198}
 \definecolor{folderborder}{RGB}{110,144,169}
 \newlength\Size
 \setlength\Size{4pt}
+
 \tikzset{%
   folder/.pic={%
     \filldraw [draw=folderborder, top color=folderbg!50, bottom color=folderbg] (-1.05*\Size,0.2\Size+5pt) rectangle ++(.75*\Size,-0.2\Size-5pt);
@@ -131,13 +133,14 @@ Die erschwerten Bedingungen in der Kommunikation und das Speichern auf Zwischenp
 \begin{itemize}
     \item Das Toolkit soll auf Linux ausführbar sein.
     \item Es sollen verschiedene Szenarien mitgeliefert werden.
-    \item Das hinzufügen von weiteren Szenarien muss möglich sein.
+    \item Das Hinzufügen von weiteren Szenarien muss möglich sein.
     \item Es muss ein Setup beiliegen, um das Toolkit problemlos installieren zu können.
+    \item Schreiben einer vollständigen Dokumentation.
 \end{itemize}
 
 \section{Implementation}
 \subsection{Verzeichnisstruktur}
-\subsubsection{Anwendungsverzeichnis}\label{avz}
+\subsubsection{Anwendungsverzeichnis (nach Setup)}\label{avz}
 \begin{forest}
   pic dir tree,
   where level=0{}{% folder icons by default; override using file for file icons
@@ -219,10 +222,11 @@ Die erschwerten Bedingungen in der Kommunikation und das Speichern auf Zwischenp
      ]
      [othervis.sh (optional), file, label=right: Enthält sonstige Visualisierungen.
      ]
-     [pingvis.sh (optional), file, label=right: Visualisiert Ping zwischen Knoten
+     [pingvis.sh (optional), file, label=right: Visualisiert Ping zwischen Knoten.
      ]
   ]
 \end{forest}
+\newpage
 \subsection{Shell Skripte}
 Unser Ziel war es, ein möglichst einfach zu bedienendes Toolkit zu erstellen, welches ohne großen Aufwand installiert werden kann. Deshalb besteht dtn-dos aus zwei, für den die Szenarien ausführenden Endnutzer, wichtigen Skripten.
 \subsubsection{Setup}
@@ -231,12 +235,14 @@ Das Setup und die Installation aller benötigten Dependencies erfolgt mittels de
     \item \texttt{xterm} - benötigt für die Visualisierungen
     \item \texttt{ncat} - benötigt für die Szenarien 'Config Take Over' und 'Config Take Over Satellite'
     \item CORE + dependencies - benötigt zum Aufbau der virtuellen Netzwerke
-    \item ION DTN - die DTN-Implementation, welche in den Szenarien zum Einsatz kommt
+    \item ION DTN \cite{ion} - die DTN-Implementation, welche in den Szenarien zum Einsatz kommt
 \end{itemize}
-Im Laufe des Setups wird CORE bereits einmal gestartet um benötigte Konfigurationsdateien anzulegen. Der Benutzer kann dieses Fenster nach Abschluss des Setups einfach schließen. 
+Im Laufe des Setups wird CORE bereits einmal gestartet um benötigte Konfigurationsdateien anzulegen. Der Benutzer kann dieses Fenster nach Abschluss des Setups einfach schließen.\par
+Wir haben dtn-dos nur für Ubuntu entwickelt und auf Ubuntu 20.0.4 LTS getestet.
 \subsubsection{Start}
 Man kann dtn-dos mit dem \texttt{start\_dtndos.sh} Skript starten. Die Auswahl des zu startenden Szenarios erfolgt dabei über die Konsole, eine Auflistung aller verfügbaren Szenarien wird ebenfalls über die Konsole ausgegeben.\par
 Nach Auswahl eines Szenarios wird automatisch die entsprechende Konfiguration von CORE geladen und zugehörige Visualisierungsskripte gestartet (mehr zur Visualisierung im Abschnitt \textbf{\ref{visualisierung}}). Eine Auflistung aller momentan implementierten Szenarien folgt im nächsten Abschnitt.
+\newpage
 \section{Szenarien}
 \subsection{Bundle Flooding}
 Das erste Szenario ist die Simulation eines Bundle Flooding Angriffs auf ein Netzwerkelement, das als Verbindungsstück zwischen einem Satelliten und dem Mission Control Center fungiert. Die für die Simulation genutzte Netzwerktopologie besteht aus fünf Elementen, welche im Common Open Research Emulator durch den \textbf{Router} Knotentypen emuliert werden.\par
@@ -310,7 +316,8 @@ Diese Art Denial of Service Attacke zeichnet sich besonders dadurch aus, dass si
 Die Visualisierung der Auswirkungen des Angriffes in unserer Netzwerksimulation erfolgt wieder durch ein Shell-Skript, welches das Ergebnis des Pings von Messstation zum Kontrollzentrum in einer Konsole ausgibt.
 
 \section{Erweiterung}
-Wir haben bei der Planung und Entwicklung dieses Tools Wert darauf gelegt, dass schnell und einfach neue Szenarien integriert werden können. Diese neu angelegten Szenarien liegen standardmäßig unter /home/User/.core/configs/ion/. Dies ist auch der Pfad, der von dem Start-Skript untersucht wird, um die verfügbaren Szenarien anzuzeigen. Er wird im Folgenden als 'Basispfad' bezeichnet.
+Wir haben bei der Planung und Entwicklung dieses Tools Wert darauf gelegt, dass schnell und einfach neue Szenarien integriert werden können. Diese neu angelegten Szenarien liegen standardmäßig unter /home/User/.core/configs/ion/. Dies ist auch der Pfad, der von dem Start-Skript untersucht wird, um die verfügbaren Szenarien anzuzeigen. Er wird im Folgenden als 'Basispfad' bezeichnet.\par
+
 
 \subsection{Aufbau eines virtuellen Netzwerks mit CORE}
 \subsubsection{Start des Common Open Research Emulator}
@@ -322,11 +329,11 @@ Zum Betrieb von CORE ist es wichtig, dass der \texttt{core-daemon} im Hintergrun
 \caption{Start der CORE-Oberfläche}
 \end{figure}
 Das User Interface von CORE zu erklären würde im Rahmen dieses Dokuments zu weit führen, allerdings gibt es eine ausführliche englische Dokumentation zu den einzelnen Knotentypen, dem User Interface und vielen weiteren Themen direkt von CORE. Diese ist unter dem folgenden Link zu finden: \url{https://coreemu.github.io/core/}\par
-Das Anlegen eines neuen CORE-Projekts sollte direkt in einem neuen Ordner im Basispfad erfolgen, um später Probleme zu vermeiden.\par
+Das Anlegen eines neuen CORE-Projekts sollte direkt in einem neuen Ordner im Basispfad erfolgen, um später Probleme zu vermeiden. Dabei ist wichtig, das der Name der <Szenario>.imn Datei d\par
 
 \subsubsection{Aufbau eines Netzwerks mit CORE}
 Die Netzwerke in unseren Szenarien bestehen der Einfachheit halber ausschließlich aus Knoten vom Typ Router, welche durch physische Links verbunden sind. Das Verwenden von anderen Knotentypen und Wireless LAN ist natürlich möglich, aber nicht von uns getestet.\par
-Wireless LAN in CORE unterstützt sogenanntes Mobility Scripting, wodurch sich Knoten zur Laufzeit aus der Verbindungsreichweite entfernen können, um Verbindungsabbrüche zu erzwingen. Diese Verbindungsabbrüche in CORE haben \textbf{keine} Auswirkung auf die Verbindung der ION Nodes.
+Wireless LAN in CORE unterstützt sogenanntes Mobility Scripting, wodurch sich Knoten zur Laufzeit aus der Verbindungsreichweite entfernen können, um Verbindungsabbrüche zu erzwingen. Diese Verbindungsabbrüche in CORE haben \textbf{keine} Auswirkung auf die Verbindung der ION Nodes. Man muss durch Anpassen der ION-Konfigurationsdateien zur gleichen Zeit für einen Verbindungsstopp sorgen.
 
 \subsubsection{Integration von ION}
 Die Integration von ION in CORE erfolgt in drei einfachen Schritten, die auf jedem Knoten ausgeführt werden müssen.
@@ -340,9 +347,10 @@ Zunächst muss ein Service eingerichtet werden, der ein Setup-Skript ausführt, 
     dirn=`dirname $SESSION_FILENAME`
     sh $dirn/nodeSetup.sh
 \end{verbatim}
-Die Backticks (`) um 'dirname [...]' können evtl. nicht richtig aus diesem Dokument kopiert werden und müssen manuell gesetzt werden.\par
-Als nächstes müssen die Verzeichnisse zugewiesen werden. Dazu auf den Tab 'Directories' wechseln, unten rechts auf den 'Verzeichnis hinzufügen' Button klicken und /var/ion hinzufügen.\par
-Zuletzt muss dem Knoten noch mitgeteilt werden, dass das in Schritt 1 angelegte \texttt{'setup.sh'} Skript ausgeführt werden soll. Dies geschieht im 'Startup/Shutdown' Tab. In die Zeile unter 'Startup commands' \texttt{'sh setup.sh'} schreiben und auf den 'Hinzufügen' Button klicken. Danach kann man die Einstellungen durch Klick auf 'Apply' anwenden und der Knoten ist konfiguriert.
+Die Backticks um "dirname [...]" können evtl. nicht richtig aus diesem Dokument kopiert werden und müssen dann manuell gesetzt werden.\par
+Als nächstes müssen die Verzeichnisse zugewiesen werden. Dazu auf den Tab 'Directories' wechseln, unten rechts auf den 'Verzeichnis hinzufügen' Button (\includegraphics[height=\fontcharht\font`\B]{new}) klicken und /var/ion hinzufügen.\par
+Zuletzt muss dem Knoten noch mitgeteilt werden, dass das in Schritt 1 angelegte \texttt{'setup.sh'} Skript ausgeführt werden soll. Dies geschieht im 'Startup/Shutdown' Tab. In die Zeile unter 'Startup commands' \texttt{'sh setup.sh'} schreiben und auf den 'Hinzufügen' Button (\includegraphics[height=\fontcharht\font`\B]{new}) klicken. Danach kann man die Einstellungen durch Klick auf 'Apply' anwenden und der Knoten ist konfiguriert. Danach muss das CORE-Projekt noch einmal gespeichert werden, da sonst die konfigurierten Knoten bei Neustart verloren gehen.\par
+Bach dem Speichern kann man das CORE-GUI erst einmal schließen.
 
 \subsubsection{nodeSetup.sh}
 Das Skript \texttt{nodeSetup.sh} wird von CORE ausgeführt, sobald ein Knoten gestartet wurde und sorgt dafür, dass auf dem Knoten ION läuft. Es muss immer im gleichen Verzeichnis liegen wie die \texttt{<Szenario>}.imn Datei. Für die genaue Verzeichnisstruktur siehe \textbf{\ref{svz}}.\par
@@ -350,12 +358,21 @@ Wir empfehlen ein schon vorhandenes \texttt{nodeSetup.sh} Skript aus einem Szena
 \begin{verbatim} 
     ionstart -I n\$IPN\_NODE\_NUMBER.rc >> \$LOG
 \end{verbatim}
-Sollte zudem eine Visualisierung der Anzahl von Bundles auf jedem Knoten gewünscht sein, muss sichergestellt werden, dass unter der if-else-Abfrage die Zeile \texttt{sh bundlecount.sh \$IPN\_NODE\_NUMBER} vorhanden ist. Mehr dazu im Abschnitt \textbf{\ref{visualisierung}}.
+Sollte zudem eine Visualisierung der Anzahl von Bundles auf jedem Knoten gewünscht sein, muss sichergestellt werden, dass unter der if-else-Abfrage die Zeile \begin{verbatim}
+    sh bundlecount.sh "$IPN_NODE_NUMBER"
+\end{verbatim} und unter \begin{verbatim}
+    cp $BASE_DIR/n$IPN_NODE_NUMBER/* .
+\end{verbatim} die Zeile 
+\begin{verbatim}
+    cp $BASE_DIR/bundlecount.sh .
+\end{verbatim} eingefügt wurden. Mehr dazu im Abschnitt \textbf{\ref{visualisierung}}.
+
 \subsection{Konfiguration von ION}
-Die Konfigurationsdateien, die ION nutzt um die Nodes zu initialisieren, sind komplex genug, um dazu eine eigene Dokumentation zu schreiben. Eine grobe Übersicht liefert der ION Deployment Guide im ion-open-source-4.0.0 Ordner (Anwndungsverzeichnis, siehe \textbf{\ref{avz}}, der sich im dtn-dos Verzeichnis befindet. Außerdem gibt es eine Serie an Videos auf YouTube, welche sich mit ION befasst. Das die Konfiguration behandelnde Video kann man unter folgendem Link finden: \url{https://www.youtube.com/watch?v=gEMoxbUz-jo}. In diesem Video wird nicht erklärt, dass man die einzelnen Konfigurationsdateien auch in einer Datei zusammenfassen kann. Deshalb lohnt es sich auch, zusätzlich die Konfigurationsdateien in unseren Szenarien anzusehen.  
+Es ist wichtig, dass für jeden Knoten, der in CORE definiert wurde, ein eigener Ordner im Szenarioverzeichnis angelegt wird. In diesen Ordnern befinden sich die ION-Konfigurationsdateien der einzelnen Knoten (vgl. \textbf{\ref{svz}}).\par
+Die Konfigurationsdateien, die ION nutzt um die Nodes zu initialisieren, sind komplex genug, um dazu eine eigene Dokumentation zu schreiben. Eine grobe Übersicht liefert der ION Deployment Guide im ion-open-source-4.0.0 Ordner (Anwendungsverzeichnis, siehe \textbf{\ref{avz}}, der sich im dtn-dos Verzeichnis befindet. Außerdem gibt es eine Serie an Videos auf YouTube, welche sich mit ION befasst. Das die Konfiguration behandelnde Video kann man unter folgendem Link finden: \url{https://www.youtube.com/watch?v=gEMoxbUz-jo}. In diesem Video wird nicht erklärt, dass man die einzelnen Konfigurationsdateien auch in einer Datei zusammenfassen kann. Deshalb lohnt es sich auch, zusätzlich die Konfigurationsdateien in unseren Szenarien anzusehen.  
 
 \subsection{Visualisierung des Szenarios}\label{visualisierung}
-Jedes Szenario hat unterschiedliche Anforderungen an die Visualisierung. Für unsere Szenarien haben wir drei Visualisierungsskripte entwickelt. Diese liegen auf der obersten Ebene des Szenarioverzeichnisses und werden durch das start\_dtndos.sh-Skript, beziehungsweise das nodeSetup.sh Skript (gilt nur für bundlecount.sh), gestartet 
+Jedes Szenario hat unterschiedliche Anforderungen an die Visualisierung. Für unsere Szenarien haben wir drei Visualisierungen entwickelt. Diese  müssen auf der obersten Ebene des Szenarioverzeichnisses liegen und werden durch das start\_dtndos.sh-Skript, beziehungsweise das nodeSetup.sh Skript (gilt nur für bundlecount.sh), gestartet.
 
 \subsubsection{bundlecount.sh und bundlewatch.sh}
 Die beiden Skripte \texttt{bundlecount.sh} und \texttt{bundlewatch.sh}, zeigen die Anzahl an Bundles auf jeder Node an. Dabei wird \texttt{bundlecount.sh} auf allen Nodes im Hintergrund ausgeführt und schreibt pro Sekunde einmal die Anzahl der auf der Node gespeicherten Bundles in eine Logdatei, die dann von \texttt{bundlewatch.sh} ausgelesen und in einem Terminal-Fenster visuell aufbereitet wird.\par
@@ -363,18 +380,19 @@ Damit diese Visualisierung funktioniert, müssen die beiden Skripte im Verzeichn
 
 \subsubsection{pingvis.sh}
 Dieses Skript wird vom \texttt{start\_dtndos.sh} Skript ausgeführt, um zu verfolgen, wann die Verbindung zwischen zwei Nodes abbricht. Dazu wird die Ausgabe des Bundle Pings auf einer Node in ein Logfile umgeleitet, welches vom pingvis Skript dann in einem Terminal ausgegeben wird.\par
-Auf den Nodes sind standardmäig die Watch Characters von ION aktiviert. Dies zeigt sich in der Ausgabe des Skriptes. Jedes Mal, wenn ein Bundle losgeschickt wird, wird einmal das Zeichen 'a' ausgegeben. Bestätigt die angepingte Node den Eingang des Signals, so wird außerdem die Response mit Round-Trip-Time ausgegeben. Gibt es einen Verbindungsabbruch, erkennt man dies an dem Fehlen ebendieser Antwort auf die gesendeten Bundles. Im Terminal tauchen dann nur noch die 'a's für gesendete Anfragen auf. 
+Auf den Nodes sind standardmäßig die Watch Characters von ION aktiviert. Dies zeigt sich in der Ausgabe des Skriptes. Jedes Mal, wenn ein Bundle losgeschickt wird, wird einmal das Zeichen 'a' ausgegeben. Bestätigt die angepingte Node den Eingang des Signals, so wird außerdem die Response mit Round-Trip-Time ausgegeben. Gibt es einen Verbindungsabbruch, erkennt man dies an dem Fehlen ebendieser Antwort auf die gesendeten Bundles. Im Terminal tauchen dann nur noch die 'a's für gesendete Anfragen auf. 
 
 \subsubsection{othervis.sh}
-Das \texttt{othervis.sh} Skript ist für alle weiteren Visualisierungen gedacht. Es wird zum Beispiel im Slowloris-Szenario genutzt, um anzuzeigen, wann genau der Angriff startet. 
+Das \texttt{othervis.sh} Skript ist für alle weiteren szenariospezifischen Visualisierungen gedacht. Es wird zum Beispiel im Slowloris-Szenario genutzt, um anzuzeigen, wann genau der Angriff startet. Durch die Anpassung auf ein bestimmtes Szenario, kann man othervis.sh-Skripte aus anderen Szenarien nur bedingt kopieren und wiederverwenden.
+
 \section{Fazit und Ausblick}
 Zusammengefasst lässt sich sagen, dass es uns gelungen ist, alle gestellten Anforderungen zu erfüllen. Das Ergebnis ist eine vollständige, leicht erweiterbare Testsuite zum Untersuchen der Auswirkungen von Denial of Service-Angriffen auf die ION-DTN-Implementierung. Diese Dokumentation markiert den Release der Version 1.0 von dtn-dos.\par
 Einige Features wurden von uns als interessant empfunden, haben es aber nicht in diese Version von dtn-dos geschafft. Diese sind im Folgenden aufgelistet:
 \begin{itemize}
     \item Detaillierte Statistiken nach Ende eines Szenarios
     \item Szenarien zur Simulation weiterer verbreiteter DoS-Angriffsarten
-    \item 
-    \item 
+    \item Graphische Liveauswertung des Netzwerkverkehrs während der Ausführung
+    \item Test, ob andere DTN-Implementationen integriert werden können
 \end{itemize}
 
 
