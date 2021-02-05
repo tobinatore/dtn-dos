@@ -329,7 +329,7 @@ Zum Betrieb von CORE ist es wichtig, dass der \texttt{core-daemon} im Hintergrun
 \caption{Start der CORE-Oberfläche}
 \end{figure}
 Das User Interface von CORE zu erklären würde im Rahmen dieses Dokuments zu weit führen, allerdings gibt es eine ausführliche englische Dokumentation zu den einzelnen Knotentypen, dem User Interface und vielen weiteren Themen direkt von CORE. Diese ist unter dem folgenden Link zu finden: \url{https://coreemu.github.io/core/}\par
-Das Anlegen eines neuen CORE-Projekts sollte direkt in einem neuen Ordner im Basispfad erfolgen, um später Probleme zu vermeiden. Dabei ist wichtig, das der Name der <Szenario>.imn Datei d\par
+Das Anlegen eines neuen CORE-Projekts sollte direkt in einem neuen Ordner im Basispfad erfolgen, um später Probleme zu vermeiden. Dabei ist wichtig, das der Name der Szenario.imn Datei dem Namen des Verzeichnisses, in dem sie liegt entspricht.\par
 
 \subsubsection{Aufbau eines Netzwerks mit CORE}
 Die Netzwerke in unseren Szenarien bestehen der Einfachheit halber ausschließlich aus Knoten vom Typ Router, welche durch physische Links verbunden sind. Das Verwenden von anderen Knotentypen und Wireless LAN ist natürlich möglich, aber nicht von uns getestet.\par
@@ -350,7 +350,7 @@ Zunächst muss ein Service eingerichtet werden, der ein Setup-Skript ausführt, 
 Die Backticks um "dirname [...]" können evtl. nicht richtig aus diesem Dokument kopiert werden und müssen dann manuell gesetzt werden.\par
 Als nächstes müssen die Verzeichnisse zugewiesen werden. Dazu auf den Tab 'Directories' wechseln, unten rechts auf den 'Verzeichnis hinzufügen' Button (\includegraphics[height=\fontcharht\font`\B]{new}) klicken und /var/ion hinzufügen.\par
 Zuletzt muss dem Knoten noch mitgeteilt werden, dass das in Schritt 1 angelegte \texttt{'setup.sh'} Skript ausgeführt werden soll. Dies geschieht im 'Startup/Shutdown' Tab. In die Zeile unter 'Startup commands' \texttt{'sh setup.sh'} schreiben und auf den 'Hinzufügen' Button (\includegraphics[height=\fontcharht\font`\B]{new}) klicken. Danach kann man die Einstellungen durch Klick auf 'Apply' anwenden und der Knoten ist konfiguriert. Danach muss das CORE-Projekt noch einmal gespeichert werden, da sonst die konfigurierten Knoten bei Neustart verloren gehen.\par
-Bach dem Speichern kann man das CORE-GUI erst einmal schließen.
+Nach dem Speichern kann man das CORE-GUI erst einmal schließen.
 
 \subsubsection{nodeSetup.sh}
 Das Skript \texttt{nodeSetup.sh} wird von CORE ausgeführt, sobald ein Knoten gestartet wurde und sorgt dafür, dass auf dem Knoten ION läuft. Es muss immer im gleichen Verzeichnis liegen wie die \texttt{<Szenario>}.imn Datei. Für die genaue Verzeichnisstruktur siehe \textbf{\ref{svz}}.\par
